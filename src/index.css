@@ -1,0 +1,81 @@
+@import './styles/tokens.css';
+@import './styles/buttons.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h); /* section tops land below the sticky bar */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--taupe);
+  font: 300 18px/1.75 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+img { display: block; max-width: 100%; }
+p { margin: 0; }
+
+:focus-visible { outline: 2px solid var(--olive-deep); outline-offset: 3px; }
+
+/* Type: Cormorant Garamond for headings, Jost for everything else */
+h1, h2, h3 { margin: 0; color: var(--olive-deep); text-wrap: balance; }
+h1    { font: 300 80px/1.04 var(--font-display); letter-spacing: -.01em; }
+h1 em { font-style: italic; color: var(--olive); }
+h2    { font: 400 52px/1.1 var(--font-display); }
+h3    { font: 500 26px/1.25 var(--font-display); }
+
+.eyebrow {
+  font: 500 12px/1.4 var(--font-body);
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--walnut);
+}
+
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  h1   { font-size: 42px; }
+  h2   { font-size: 34px; }
+  h3   { font-size: 22px; }
+}
+
+/* the page container: 1440px wide at most, with the gutter on each side */
+.wrap {
+  width: min(var(--container), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 10px; left: 10px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--olive-deep);
+  color: var(--cream);
+  font-weight: 500;
+  transform: translateY(-160%);
+  transition: transform .2s;
+}
+.skip-link:focus { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

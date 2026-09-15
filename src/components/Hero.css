@@ -1,0 +1,278 @@
+/* Hero: navbar + hero fill the screen. The room photo (then the walkthrough
+   video) fills the whole hero behind the copy, under a light tint with a
+   deeper shade behind the copy, so the footage stays bright and the cream
+   text stays readable. The copy sits in the page container (same left
+   edge as the logo) on a 5:7 grid. Spacing follows the 8px scale in tokens.css. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - var(--nav-h));
+  min-height: calc(100svh - var(--nav-h)); /* phones: ignore the browser bars */
+  /* more space below than above, so the copy sits on the optical centre */
+  padding: var(--space-8) 0 var(--space-12);
+  overflow: hidden;
+  color: var(--cream);
+}
+
+/* ---------- room photo + walkthrough video ---------- */
+
+/* full bleed; dark olive shows while the photo is still loading. It stops 2px
+   short of the hero's foot, inside the solid cream at the end of the fade
+   below: with Windows display scaling the foot can fall mid-pixel, and a media
+   edge there blends into a dark line along the seam. */
+.hero__media {
+  position: absolute;
+  inset: 0 0 2px;
+  overflow: hidden;
+  z-index: -2; /* under the copy's shade (.hero__copy::before) */
+  background: var(--olive-deep);
+}
+/* the photo and the video share the box; the video lies on top */
+.hero__photo,
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 70%;
+}
+/* hidden until it is actually playing, then a slow crossfade over the photo */
+.hero__video {
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease);
+}
+.hero__video.is-on { opacity: 1; }
+
+/* Light over the footage, so it doesn't read as dim (user's request): a light
+   deep-olive tint (.22) over everything, so it reads as warm shade, and
+   warm-white light in the corners, fullest at the right, where there is no
+   text. The centre of the frame (the focus of the footage) stays clear; the
+   deeper shade sits only behind the copy (.hero__copy::before). */
+.hero__media::after {
+  --glow: 255 250 242;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 65% at 100% 0%,   rgb(var(--glow) / .3),  transparent 70%),
+    radial-gradient(ellipse 50% 60% at 100% 100%, rgb(var(--glow) / .26), transparent 70%),
+    radial-gradient(ellipse 32% 38% at 0% 0%,     rgb(var(--glow) / .2),  transparent 70%),
+    radial-gradient(ellipse 36% 40% at 0% 100%,   rgb(var(--glow) / .2),  transparent 70%),
+    rgb(28 29 15 / .22);
+}
+
+/* The foot of the hero dissolves into the page cream, so the footage flows into
+   the next section rather than stopping on a hard edge. It lies above the copy's
+   shade (so that can't grey the cream) and below the text and buttons. The ramp
+   is eased (slow start, full cream only at the very bottom) so it shows no band. */
+.hero::after {
+  --fade: clamp(96px, 16svh, 160px);
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  height: var(--fade);
+  background: linear-gradient(
+    rgb(248 244 238 / 0),
+    rgb(248 244 238 / .03) 18%,
+    rgb(248 244 238 / .1) 34%,
+    rgb(248 244 238 / .23) 50%,
+    rgb(248 244 238 / .42) 65%,
+    rgb(248 244 238 / .65) 80%,
+    rgb(248 244 238 / .88) 92%,
+    var(--cream) calc(100% - 4px)); /* solid for the last 4px, over the media's edge */
+  pointer-events: none;
+}
+
+/* ---------- copy ---------- */
+
+/* 12-column thinking: copy on 5 of 12 columns */
+.hero__inner {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  column-gap: var(--space-8);
+}
+
+/* Distrampler (the Figma's headline face) when it is available; until then
+   Cormorant at 500, which comes closest to its stroke weight */
+.hero h1 {
+  font: 500 var(--text-hero)/1.04 "Distrampler", var(--font-display);
+  letter-spacing: 0;
+  color: var(--cream);
+}
+/* Shade behind the copy only, kept light (user: the dark box was too visible).
+   A box that follows the text block at every width and runs off the left edge;
+   its other edges fade over long, eased ramps (128px above and below, 160px at
+   the right, ending 96px past the copy) so it reads as soft shade rather than a
+   shape, and the centre of the footage stays bright. .46 is the lightest that
+   keeps the text near 3:1 (AURA) and 4.5:1 (paragraph) over the brightest
+   frames, with the halo under the letters helping (scratchpad video/contrast.js). */
+.hero__copy { position: relative; }
+.hero__copy::before {
+  --fy: 128px;
+  --fx: 160px;
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--fy)) calc(-1 * var(--space-12)) calc(-1 * var(--fy)) calc(-1 * (var(--gutter) + var(--fy)));
+  background: rgb(28 29 15 / .46);
+  --mask-x: linear-gradient(90deg, #000 calc(100% - var(--fx)), rgb(0 0 0 / .6) calc(100% - var(--fx) * .65), rgb(0 0 0 / .2) calc(100% - var(--fx) * .35), transparent);
+  --mask-y: linear-gradient(transparent, rgb(0 0 0 / .2) calc(var(--fy) * .35), rgb(0 0 0 / .6) calc(var(--fy) * .65), #000 var(--fy),
+    #000 calc(100% - var(--fy)), rgb(0 0 0 / .6) calc(100% - var(--fy) * .65), rgb(0 0 0 / .2) calc(100% - var(--fy) * .35), transparent);
+  -webkit-mask: var(--mask-x), var(--mask-y);
+  -webkit-mask-composite: source-in;
+  mask: var(--mask-x), var(--mask-y);
+  mask-composite: intersect;
+  pointer-events: none;
+}
+.hero__line { display: block; }
+/* a soft halo under the letters, so they hold when the footage turns bright */
+.hero h1,
+.hero__lede {
+  text-shadow:
+    0 1px 2px rgb(20 20 10 / .35),
+    0 0 12px rgb(20 20 10 / .3),
+    0 0 36px rgb(20 20 10 / .4);
+}
+/* "AURA": upright capitals in oat, the brand's highlight on dark grounds,
+   lifted a quarter toward cream so it holds 3:1 over the brightest frames */
+.hero h1 em {
+  font-style: normal;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--oat) 75%, var(--cream));
+}
+
+/* 45-60 characters a line, with comfortable reading leading; balanced so the
+   last line isn't left short */
+.hero__lede {
+  max-width: 34em;
+  margin-top: var(--space-4);
+  font: 350 var(--text-lg)/1.55 var(--font-body); /* 350: Jost's match for Helvetica Neue Light */
+  letter-spacing: .01em;
+  color: var(--cream);
+  text-wrap: balance;
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+/* the main button is deep olive (user's choice: the darker shade), with a fine
+   cream edge so its shape holds on the dark footage and it leads over "Our work".
+   With the oat hairline inside, it reads as a double rule. It is already at its
+   deepest, so on hover it lifts, the hairline brightens and the gleam passes.
+   Shadows are deeper on the dark ground. */
+.hero .btn:not(.line) {
+  background-color: var(--olive-deep);
+  box-shadow:
+    inset 0 0 0 1px var(--cream),
+    inset 0 2px 0 rgb(255 255 255 / .1),
+    0 1px 2px rgb(20 20 10 / .3),
+    0 12px 26px -12px rgb(20 20 10 / .7);
+}
+.hero .btn:not(.line):hover {
+  box-shadow:
+    inset 0 0 0 1px var(--cream),
+    inset 0 2px 0 rgb(255 255 255 / .08),
+    0 2px 4px rgb(20 20 10 / .3),
+    0 20px 34px -14px rgb(20 20 10 / .75);
+}
+/* "Our work": the same finish in warm tan with deep olive text (5.3:1; white
+   would be 2.5:1) and an olive hairline, lightening to cream on hover */
+.hero .btn.line {
+  background: linear-gradient(180deg, rgb(255 255 255 / .12), rgb(0 0 0 / .08)), var(--tan-warm);
+  color: var(--olive-deep);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .25),
+    0 1px 2px rgb(20 20 10 / .3),
+    0 12px 26px -12px rgb(20 20 10 / .7);
+}
+.hero .btn.line::after { border-color: rgb(47 48 25 / .3); }
+.hero .btn.line:hover {
+  background-color: var(--cream);
+  color: var(--olive-deep);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / .3),
+    0 2px 4px rgb(20 20 10 / .3),
+    0 20px 34px -14px rgb(20 20 10 / .75);
+}
+.hero .btn.line:hover::after { border-color: rgb(47 48 25 / .4); }
+.hero :focus-visible { outline-color: var(--cream); }
+
+/* smaller laptops and tablets in landscape: give the copy half the width */
+@media (max-width: 1199px) {
+  .hero__inner { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- load sequence ----------
+   Each step is set up paused on its first frame (so it is hidden), and starts
+   when Hero.tsx adds .is-ready (photo loaded). With reduced motion, index.css
+   turns animations off and everything simply shows. */
+
+.hero__photo img {
+  animation: hero-photo 1.6s var(--ease) both paused;
+}
+
+.hero__line,
+.hero__lede,
+.hero__cta {
+  animation: hero-rise 1s var(--ease) var(--d, 0s) both paused;
+}
+.hero__line:nth-child(1) { --d: .35s; }
+.hero__line:nth-child(2) { --d: .5s; }
+.hero__line:nth-child(3) { --d: .65s; }
+.hero__lede              { --d: .8s; }
+.hero__cta               { --d: .95s; }
+
+.hero.is-ready .hero__photo img,
+.hero.is-ready .hero__line,
+.hero.is-ready .hero__lede,
+.hero.is-ready .hero__cta { animation-play-state: running; }
+
+@keyframes hero-photo {
+  from { opacity: 0; transform: scale(1.05); }
+}
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(22px); }
+}
+
+/* ---------- tablets and phones ---------- */
+
+/* one column of copy over the full-bleed footage */
+@media (max-width: 900px) {
+  .hero { padding: var(--space-8) 0; }
+  .hero__inner { grid-template-columns: minmax(0, 1fr); }
+  .hero h1 { font-size: clamp(44px, 7vw, 64px); } /* full width now, so it can be larger */
+  .hero__photo img { object-position: 45% 50%; }
+  /* the copy runs full width, so its shade spans the screen and reads as an even
+     tint rather than a box: no fade at the right, and a little deeper, since
+     the text sits over the brightest middle of the footage */
+  .hero__copy::before { --fx: 1px; background: rgb(28 29 15 / .55); }
+  /* the copy runs full width here (its shade spans the screen), so the light
+     stays in the strips above the headline and below the buttons */
+  .hero__media::after {
+    background:
+      radial-gradient(ellipse 70% 22% at 100% 0%,   rgb(var(--glow) / .26), transparent 70%),
+      radial-gradient(ellipse 50% 18% at 0% 0%,     rgb(var(--glow) / .18), transparent 70%),
+      radial-gradient(ellipse 70% 24% at 100% 100%, rgb(var(--glow) / .26), transparent 70%),
+      radial-gradient(ellipse 50% 20% at 0% 100%,   rgb(var(--glow) / .2),  transparent 70%),
+      rgb(28 29 15 / .22);
+  }
+}
+
+@media (max-width: 760px) {
+  .hero { padding: var(--space-6) 0; }
+  .hero__lede { margin-top: var(--space-3); }
+  .hero__cta { margin-top: var(--space-4); }
+  .hero__cta .btn { flex: 1 1 auto; } /* share the row, stack when it runs out */
+}
