@@ -1,6 +1,7 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import WhyUs from './components/WhyUs'
+import OurProcess from './components/OurProcess'
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
       <main id="main">
         <Hero />
         <WhyUs />
+        <OurProcess />
       </main>
     </>
   )

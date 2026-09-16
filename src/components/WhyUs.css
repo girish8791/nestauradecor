@@ -1,27 +1,21 @@
-/* Why choose us (Figma "Why choose us frame"). At 1440 it is placed as in the
-   frame: heading centred (y 118); the promise and five points in a narrow
-   column at the left (x 84-600, from y 344); the 500 x 544 photo card at
-   x 806, y 325, with a wide gap between them; the bronze branch behind the
-   card, running off the right edge. Spacing follows the 8px scale in tokens.css. */
+/* Balanced editorial proportions with generous space between columns. */
 .why {
-  --bleed: var(--space-12); /* how far the branch rises into the hero's faded foot */
+  --bleed: var(--space-12); /* length of the soft fade at the branch's upper edge */
   position: relative;
   isolation: isolate;
   overflow-x: clip;
-  padding-block: var(--space-12);
-}
-/* with the branch showing: the heading sits where the frame has it (118px down),
-   so the branch tip reaches over the "?" rather than across it */
-@media (min-width: 1200px) {
-  .why { padding-top: calc(var(--space-12) + var(--space-3)); }
+  padding-block: var(--space-10);
 }
 
-/* The branch's frame: the section's box, extended upward by --bleed, so the
-   branch rises into the hero's faded foot instead of being sliced off at the
-   seam between the two sections. */
+@media (min-width: 1200px) {
+  .why { padding-top: var(--space-10); }
+}
+
+/* Keep the decorative branch inside this section. The frame clips its upper
+   edge at the section boundary so it cannot overlap the hero above. */
 .why__branch-frame {
   position: absolute;
-  inset: calc(-1 * var(--bleed)) 0 0;
+  inset: 0;
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
@@ -33,11 +27,11 @@
    section. */
 .why__branch {
   position: absolute;
-  top: var(--bleed);
+  top: var(--space-3);
   right: max(0px, (100% - var(--container)) / 2 - var(--gutter));
   width: min(1144px, 79.5vw);
-  translate: 47.6% -33%;
-  --seam: 33%; /* the section's top edge, measured down the image */
+  translate: 47.6% -29%;
+  --seam: 29%; /* the section's top edge, measured down the image */
   -webkit-mask-image: linear-gradient(
     transparent calc(var(--seam) - var(--bleed)),
     rgb(0 0 0 / .25) calc(var(--seam) - var(--bleed) * .5),
@@ -51,51 +45,50 @@
 }
 .why__branch img { width: 100%; height: auto; }
 
-/* line-height as Figma's "normal" (box 120-200 at 1440) */
+
 .why__heading {
-  font: 700 var(--text-h2)/1.25 var(--font-sans);
+  font: 500 clamp(38px, 3.6vw, 52px)/1.15 "Distrampler", var(--font-display);
   letter-spacing: -.01em;
   text-align: center;
 }
 
 /* ---------- promise + photo ---------- */
 
-/* Copy up to 592 wide at the left, the card at the right, the space between
-   them left open as in the frame. The right padding leaves room for the branch
-   (card's right edge at 1304 of 1440; Figma 1306). */
+
 .why__body {
   display: grid;
-  grid-template-columns: minmax(0, 592px) clamp(360px, 35vw, 500px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, .85fr);
   justify-content: space-between;
   column-gap: var(--space-8);
-  align-items: start;
-  margin-top: var(--space-16); /* card top at 328 (Figma 325) */
-  padding-right: clamp(0px, (100vw - 1200px) * .3, 72px);
+  align-items: center;
+  margin-top: var(--space-6);
+  max-width: 1200px;
+  margin-inline: auto;
 }
 
-/* the copy starts 16px below the card's top, as in the frame (344 vs 327) */
+
 .why__copy {
   container-type: inline-size;
-  padding-top: var(--space-2);
+  padding-top: 0;
 }
 
 .why__title {
-  font: 500 var(--text-h3)/1.2 var(--font-sans);
+  font: 500 clamp(28px, 2.5vw, 36px)/1.25 "Distrampler", var(--font-display);
   letter-spacing: -.005em;
 }
 .why__sub {
   max-width: 34em;
-  margin-top: var(--space-3);
-  font: 350 var(--text-lg)/1.55 var(--font-body);
+  margin-top: var(--space-2);
+  font: 350 18px/1.6 var(--font-body);
   text-wrap: balance;
 }
 
-/* Figma: 66px circles on 110px rows (564 / 674 / 783), label centred on each */
+
 .why__points {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, max-content));
-  gap: var(--space-6) var(--space-4);
-  margin: var(--space-10) 0 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-3);
+  margin: var(--space-5) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -108,14 +101,14 @@
   flex: none;
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: var(--walnut); /* user's choice from the palette */
 }
 .why__icon svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   fill: none;
   stroke: var(--cream);
   stroke-width: 1.6;
@@ -124,22 +117,22 @@
 }
 .why__point-title {
   display: block;
-  font: 500 var(--text-base)/1.35 var(--font-sans);
+  font: 500 17px/1.4 var(--font-body);
   color: var(--olive-deep);
 }
 .why__point-text {
   display: block;
   margin-top: 2px;
-  font: 350 var(--text-sm)/1.5 var(--font-body);
+  font: 350 16px/1.5 var(--font-body);
 }
 
-.why__cta { margin-top: var(--space-6); }
+.why__cta { margin-top: var(--space-5); font-size: 16px; padding: 14px 28px; }
 
-/* Figma: 500 × 544 card with 26.5px corners (24 on the 8px scale) */
+
 .why__photo {
   justify-self: end;
   width: 100%;
-  max-width: 500px;
+  max-width: 450px;
 }
 /* the team photo is landscape (740 x 493): the card crops it to the frame's
    portrait shape, keeping the three people on the right fully in view */
@@ -149,25 +142,116 @@
   aspect-ratio: 471 / 512;
   object-fit: cover;
   object-position: 66% 50%;
-  border-radius: var(--space-3);
+  border-radius: 12px;
 }
 
+/* ---------- scroll reveal ----------
+   The section enters as one composed scene: the heading leads, the promise and
+   feature list follow in reading order, and the image settles into place at the
+   right. WhyUs.tsx adds .is-visible the first time the section reaches the
+   viewport, and resets it when scrolling back above the section. */
+.why__heading,
+.why__title,
+.why__sub,
+.why__point,
+.why__cta,
+.why__photo {
+  opacity: 0;
+  filter: blur(5px);
+  transition:
+    opacity 0.325s cubic-bezier(.16, 1, .3, 1),
+    transform 0.4s cubic-bezier(.16, 1, .3, 1),
+    filter 0.325s ease-out;
+  will-change: opacity, transform, filter;
+}
+
+.why__heading { transform: translateY(30px); }
+.why__title,
+.why__sub,
+.why__cta { transform: translateY(22px); }
+.why__point { transform: translateY(18px); }
+.why__photo {
+  -webkit-clip-path: inset(10% 8% 10% 8% round var(--space-3));
+  clip-path: inset(10% 8% 10% 8% round var(--space-3));
+  transform: translateY(28px) scale(1.035);
+  transform-origin: 50% 50%;
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.575s cubic-bezier(.16, 1, .3, 1),
+    filter 0.45s ease-out,
+    -webkit-clip-path 0.55s cubic-bezier(.16, 1, .3, 1),
+    clip-path 0.55s cubic-bezier(.16, 1, .3, 1);
+}
+
+/* Reveal the branch from its bottom edge upward, like the ornament is growing
+   into the composition. A small upward drift softens the clipping edge and
+   makes the movement feel organic rather than like a quick wipe. */
+.why__branch {
+  opacity: .35;
+  -webkit-clip-path: inset(100% 0 0 0);
+  clip-path: inset(100% 0 0 0);
+  transform: translateY(72px) scale(.985);
+  transform-origin: 70% 80%;
+  transition:
+    opacity 0.7s ease-out,
+    transform 1.325s cubic-bezier(.16, 1, .3, 1),
+    -webkit-clip-path 1.275s cubic-bezier(.22, 1, .36, 1),
+    clip-path 1.275s cubic-bezier(.22, 1, .36, 1);
+  will-change: opacity, transform, clip-path;
+}
+
+.why.is-visible .why__heading,
+.why.is-visible .why__title,
+.why.is-visible .why__sub,
+.why.is-visible .why__point,
+.why.is-visible .why__cta,
+.why.is-visible .why__photo {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  -webkit-clip-path: inset(0 round var(--space-3));
+  clip-path: inset(0 round var(--space-3));
+  will-change: auto;
+}
+
+.why.is-visible .why__branch {
+  opacity: 1;
+  -webkit-clip-path: inset(0);
+  clip-path: inset(0);
+  transform: none;
+  will-change: auto;
+}
+
+/* Reading order: heading to promise, each feature, then the button. The branch
+   moves alongside the copy; the photo finishes at 2s (1.425s delay + .575s motion). */
+.why__heading { transition-delay: 0.075s; }
+.why__title { transition-delay: 0.275s; }
+.why__sub { transition-delay: 0.425s; }
+.why__point:nth-child(1) { transition-delay: 0.575s; }
+.why__point:nth-child(2) { transition-delay: 0.71s; }
+.why__point:nth-child(3) { transition-delay: 0.845s; }
+.why__point:nth-child(4) { transition-delay: 0.98s; }
+.why__point:nth-child(5) { transition-delay: 1.115s; }
+.why__cta { transition-delay: 1.3s; }
+.why__branch { transition-delay: 0.06s; }
+.why__photo { transition-delay: 1.425s; }
+
 /* the points go to one column when the copy gets narrow */
-@container (max-width: 559px) {
+@container (max-width: 459px) {
   .why__points { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
 }
 
 /* ---------- tablets and phones ---------- */
 
 /* one column: the promise and points, then the card; the branch would crowd it */
-@media (max-width: 1199px) {
+@media (max-width: 899px) {
   .why__body {
     grid-template-columns: minmax(0, 1fr);
     row-gap: var(--space-8);
     margin-top: var(--space-8);
   }
   .why__copy { padding-top: 0; }
-  .why__points { margin-top: var(--space-8); }
+  .why__points { margin-top: var(--space-4); }
   .why__photo { justify-self: center; }
   .why__branch-frame { display: none; }
 }
@@ -176,7 +260,24 @@
   .why { padding-block: var(--space-8); }
   .why__body { margin-top: var(--space-6); row-gap: var(--space-6); }
   .why__points { margin-top: var(--space-5); }
-  .why__icon { width: 56px; height: 56px; }
-  .why__icon svg { width: 24px; height: 24px; }
-  .why__cta { display: flex; margin-top: var(--space-5); }
+  .why__icon { width: 48px; height: 48px; }
+  .why__icon svg { width: 23px; height: 23px; }
+  .why__cta { display: inline-flex; margin-top: var(--space-4); }
+  .why__photo img { aspect-ratio: 4 / 3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .why__heading,
+  .why__title,
+  .why__sub,
+  .why__point,
+  .why__cta,
+  .why__photo,
+  .why__branch {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    -webkit-clip-path: none;
+    clip-path: none;
+  }
 }

@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import './WhyUs.css'
 
 /* From the Figma "Why choose us frame": a centred heading; the promise and five
@@ -14,8 +15,37 @@ const points = [
 const BRANCH_SIZES = 'min(1144px, 79.5vw)' // matches .why__branch in WhyUs.css
 
 export default function WhyUs() {
+  const section = useRef<HTMLElement>(null)
+  const [isVisible, setIsVisible] = useState(() =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || !('IntersectionObserver' in window),
+  )
+
+  useEffect(() => {
+    const element = section.current
+    if (!element) return
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setIsVisible(true)
+      else if (entry.boundingClientRect.top >= innerHeight * .88) setIsVisible(false)
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -12% 0px',
+    })
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section id="why" className="why" aria-labelledby="why-title">
+    <section
+      ref={section}
+      id="why"
+      className={isVisible ? 'why is-visible' : 'why'}
+      aria-labelledby="why-title"
+    >
       {/* decorative: the bronze branch at the right edge, behind the photo */}
       {/* Figma's high-resolution export: 2289 x 3434, twice its 1144px display width.
           The frame around it lets the branch rise a little into the hero's faded
