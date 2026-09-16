@@ -1,0 +1,69 @@
+/* Nest Aura Decor — tokens.
+   Olive is the brand colour (logo and every button); the navbar is Nest tan
+   with the olive logo on it. No gold, and never the moodboard's red. */
+:root {
+  --font-display: "Cormorant Garamond", Garamond, "Times New Roman", serif;
+  --font-body:    "Jost", "Helvetica Neue", Arial, sans-serif;
+  /* buttons (user's choice): Helvetica Neue ships with Mac and iPhone; there's no
+     free web version, so Windows and Android show Helvetica or Arial instead */
+  --font-button:  "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* section headings (Figma "Why choose us frame": Google Sans Bold) */
+  --font-sans:    "Google Sans", "Jost", Arial, sans-serif;
+
+  /* surfaces */
+  --cream:        #F8F4EE;  /* page */
+  --sand:         #F2EBE1;  /* sections */
+  --ivory:        #FCFAF6;  /* cards */
+  --divider:      #E8DFD2;
+  --linen:        #DDCFBC;  /* caption strips */
+  --footer-cream: #F5F1E3;
+
+  /* brand */
+  --tan:          #C2A788;  /* Nest tan: navbar (Figma frame "MacBook Pro 16") */
+  --tan-warm:     #BC9F7D;  /* the logo's kraft-paper tan: hero "Our work" button */
+  --olive:        #55583B;  /* logo, buttons, actions */
+  --olive-deep:   #2F3019;  /* headings, footer */
+  --oat:          #D3BC9C;  /* highlights on olive and dark grounds */
+  --walnut:       #75593A;  /* small labels and links on cream (5.7:1) */
+
+  /* ink */
+  --taupe:        #6B6358;  /* body text (5.4:1 on cream) */
+
+  /* spacing: an 8px scale (the number is the multiple of 8) */
+  --space-1:  8px;
+  --space-2:  16px;
+  --space-3:  24px;
+  --space-4:  32px;
+  --space-5:  40px;
+  --space-6:  48px;
+  --space-8:  64px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-16: 128px;
+
+  /* type scale: 18px body, larger text stepping up by about 1.25 */
+  --text-sm:   16px;   /* buttons and small UI labels */
+  --text-base: 18px;   /* body, nav links */
+  --text-lg:   clamp(18px, 1rem + .5vw, 22px);  /* lead paragraph */
+  --text-hero: clamp(44px, 5.1vw, 88px);        /* hero headline */
+  --text-h2:   clamp(36px, 1.5rem + 2.8vw, 64px);  /* section headings */
+  --text-h3:   clamp(26px, 1rem + 1.7vw, 40px);    /* section sub-headings */
+
+  /* layout: one container for every section, so edges line up */
+  --container: 1440px;
+  --gutter: var(--space-3);
+  --nav-h: 72px;
+
+  /* motion: a long, soft ease-out */
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+
+@media (min-width: 761px) {
+  :root { --gutter: var(--space-5); }
+}
+@media (min-width: 821px) {
+  :root { --nav-h: 88px; }
+}
+@media (min-width: 1200px) {
+  :root { --gutter: var(--space-8); }
+}

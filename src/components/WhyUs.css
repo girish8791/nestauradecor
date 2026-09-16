@@ -1,0 +1,182 @@
+/* Why choose us (Figma "Why choose us frame"). At 1440 it is placed as in the
+   frame: heading centred (y 118); the promise and five points in a narrow
+   column at the left (x 84-600, from y 344); the 500 x 544 photo card at
+   x 806, y 325, with a wide gap between them; the bronze branch behind the
+   card, running off the right edge. Spacing follows the 8px scale in tokens.css. */
+.why {
+  --bleed: var(--space-12); /* how far the branch rises into the hero's faded foot */
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  padding-block: var(--space-12);
+}
+/* with the branch showing: the heading sits where the frame has it (118px down),
+   so the branch tip reaches over the "?" rather than across it */
+@media (min-width: 1200px) {
+  .why { padding-top: calc(var(--space-12) + var(--space-3)); }
+}
+
+/* The branch's frame: the section's box, extended upward by --bleed, so the
+   branch rises into the hero's faded foot instead of being sliced off at the
+   seam between the two sections. */
+.why__branch-frame {
+  position: absolute;
+  inset: calc(-1 * var(--bleed)) 0 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Figma: 1144 × 1717 at the 1440 frame's x 840, y -566, i.e. 47.6% of it past the
+   right edge and 33% above the top. It keeps to the container's edge on wide
+   screens, so it stays with the card. Where it rises above the section it fades
+   in (eased), so no edge shows: clear at the frame's top, solid 48px into the
+   section. */
+.why__branch {
+  position: absolute;
+  top: var(--bleed);
+  right: max(0px, (100% - var(--container)) / 2 - var(--gutter));
+  width: min(1144px, 79.5vw);
+  translate: 47.6% -33%;
+  --seam: 33%; /* the section's top edge, measured down the image */
+  -webkit-mask-image: linear-gradient(
+    transparent calc(var(--seam) - var(--bleed)),
+    rgb(0 0 0 / .25) calc(var(--seam) - var(--bleed) * .5),
+    rgb(0 0 0 / .7) var(--seam),
+    #000 calc(var(--seam) + var(--space-6)));
+  mask-image: linear-gradient(
+    transparent calc(var(--seam) - var(--bleed)),
+    rgb(0 0 0 / .25) calc(var(--seam) - var(--bleed) * .5),
+    rgb(0 0 0 / .7) var(--seam),
+    #000 calc(var(--seam) + var(--space-6)));
+}
+.why__branch img { width: 100%; height: auto; }
+
+/* line-height as Figma's "normal" (box 120-200 at 1440) */
+.why__heading {
+  font: 700 var(--text-h2)/1.25 var(--font-sans);
+  letter-spacing: -.01em;
+  text-align: center;
+}
+
+/* ---------- promise + photo ---------- */
+
+/* Copy up to 592 wide at the left, the card at the right, the space between
+   them left open as in the frame. The right padding leaves room for the branch
+   (card's right edge at 1304 of 1440; Figma 1306). */
+.why__body {
+  display: grid;
+  grid-template-columns: minmax(0, 592px) clamp(360px, 35vw, 500px);
+  justify-content: space-between;
+  column-gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-16); /* card top at 328 (Figma 325) */
+  padding-right: clamp(0px, (100vw - 1200px) * .3, 72px);
+}
+
+/* the copy starts 16px below the card's top, as in the frame (344 vs 327) */
+.why__copy {
+  container-type: inline-size;
+  padding-top: var(--space-2);
+}
+
+.why__title {
+  font: 500 var(--text-h3)/1.2 var(--font-sans);
+  letter-spacing: -.005em;
+}
+.why__sub {
+  max-width: 34em;
+  margin-top: var(--space-3);
+  font: 350 var(--text-lg)/1.55 var(--font-body);
+  text-wrap: balance;
+}
+
+/* Figma: 66px circles on 110px rows (564 / 674 / 783), label centred on each */
+.why__points {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  gap: var(--space-6) var(--space-4);
+  margin: var(--space-10) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.why__point {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.why__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--walnut); /* user's choice from the palette */
+}
+.why__icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--cream);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.why__point-title {
+  display: block;
+  font: 500 var(--text-base)/1.35 var(--font-sans);
+  color: var(--olive-deep);
+}
+.why__point-text {
+  display: block;
+  margin-top: 2px;
+  font: 350 var(--text-sm)/1.5 var(--font-body);
+}
+
+.why__cta { margin-top: var(--space-6); }
+
+/* Figma: 500 × 544 card with 26.5px corners (24 on the 8px scale) */
+.why__photo {
+  justify-self: end;
+  width: 100%;
+  max-width: 500px;
+}
+/* the team photo is landscape (740 x 493): the card crops it to the frame's
+   portrait shape, keeping the three people on the right fully in view */
+.why__photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 471 / 512;
+  object-fit: cover;
+  object-position: 66% 50%;
+  border-radius: var(--space-3);
+}
+
+/* the points go to one column when the copy gets narrow */
+@container (max-width: 559px) {
+  .why__points { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+}
+
+/* ---------- tablets and phones ---------- */
+
+/* one column: the promise and points, then the card; the branch would crowd it */
+@media (max-width: 1199px) {
+  .why__body {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-8);
+    margin-top: var(--space-8);
+  }
+  .why__copy { padding-top: 0; }
+  .why__points { margin-top: var(--space-8); }
+  .why__photo { justify-self: center; }
+  .why__branch-frame { display: none; }
+}
+
+@media (max-width: 760px) {
+  .why { padding-block: var(--space-8); }
+  .why__body { margin-top: var(--space-6); row-gap: var(--space-6); }
+  .why__points { margin-top: var(--space-5); }
+  .why__icon { width: 56px; height: 56px; }
+  .why__icon svg { width: 24px; height: 24px; }
+  .why__cta { display: flex; margin-top: var(--space-5); }
+}
