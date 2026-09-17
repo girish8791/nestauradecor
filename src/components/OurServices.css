@@ -1,4 +1,28 @@
 .services { background: var(--sand); overflow: clip; container-type: inline-size; }
+.services__card-reveal { position: absolute; inset: 0; }
+/* Match Why Choose Us: a gentle, two-second sequence with stable layout.
+   Reveal the inner layer so carousel positioning keeps its own transform. */
+.services .services__scene h2,
+.services__card-reveal,
+.services .services__controls {
+  opacity: 0;
+  translate: 0 12px;
+  transition: opacity .45s ease-out, translate .575s var(--ease);
+}
+.services.is-visible .services__scene h2,
+.services.is-visible .services__card-reveal,
+.services.is-visible .services__controls,
+.services:focus-within .services__scene h2,
+.services:focus-within .services__card-reveal,
+.services:focus-within .services__controls { opacity: 1; translate: 0 0; }
+.services.is-visible .services__scene h2 { transition-delay: .075s; }
+.services.is-visible .services__card-reveal { transition-delay: var(--reveal-delay, .275s); }
+.services.is-visible .services__controls { transition-delay: 1.425s; }
+@media (prefers-reduced-motion: reduce) {
+  .services .services__scene h2, .services__card-reveal, .services .services__controls {
+    opacity: 1; translate: none; transition: none;
+  }
+}
 /* Figma 143:215: centred 467 × 650 arch, with smaller arches on either side. */
 .services__scene { position: relative; height: 71.111111cqw; isolation: isolate; touch-action: pan-y; user-select: none; }
 .services__scene h2 { position: absolute; top: 11.685417cqw; width: 100%; margin: 0; color: var(--olive-deep); text-align: center; font: 500 4.554931cqw/1.04 "Distrampler", var(--font-display); letter-spacing: 0; }

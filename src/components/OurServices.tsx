@@ -27,7 +27,8 @@ export default function OurServices() {
   const [galleryIndex, setGalleryIndex] = useState(0)
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
-  const [inView, setInView] = useState(false)
+  const [inView, setInView] = useState(() => !('IntersectionObserver' in window))
+  const [revealed, setRevealed] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window))
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches)
   const go = (index: number) => setActive((index + services.length) % services.length)
 
@@ -55,9 +56,14 @@ export default function OurServices() {
 
   useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)')
-    const change = () => setReduced(media.matches)
+    const change = () => { setReduced(media.matches); if (media.matches) setRevealed(true) }
     media.addEventListener('change', change)
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: .25 })
+    if (!('IntersectionObserver' in window)) { return () => media.removeEventListener('change', change) }
+    const observer = new IntersectionObserver(([entry]) => {
+      setInView(entry.isIntersecting)
+      if (entry.intersectionRatio >= .12) setRevealed(true)
+      else if (entry.intersectionRatio === 0 && entry.boundingClientRect.top >= innerHeight) setRevealed(false)
+    }, { threshold: [0, .12] })
     observer.observe(section.current!)
     return () => { observer.disconnect(); media.removeEventListener('change', change) }
   }, [])
@@ -71,7 +77,7 @@ export default function OurServices() {
   }, [paused, reduced, inView, active, explored])
 
   return (
-    <section id="services" className="services" ref={section} aria-labelledby="services-title"
+    <section id="services" className={`services${revealed || reduced ? ' is-visible' : ''}`} ref={section} aria-labelledby="services-title"
       onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false) }}>
@@ -107,9 +113,10 @@ export default function OurServices() {
           return (
             <div key={service.id} role="group"
               className={`services__card${offset === 0 ? ' is-active' : ''}`}
-              style={{ '--offset': offset, '--direction': Math.sign(offset), '--scale': offset === 0 ? 1 : .704, zIndex: 12 - Math.abs(offset), opacity: hidden ? 0 : 1, pointerEvents: hidden ? 'none' : 'auto' } as CSSProperties}
+              style={{ '--reveal-delay': `${.275 + Math.abs(offset) * .16}s`, '--offset': offset, '--direction': Math.sign(offset), '--scale': offset === 0 ? 1 : .704, zIndex: 12 - Math.abs(offset), opacity: hidden ? 0 : 1, pointerEvents: hidden ? 'none' : 'auto' } as CSSProperties}
               aria-label={`${service.title}, service ${index + 1} of ${services.length}`}
               aria-hidden={hidden}>
+              <div className="services__card-reveal">
               <button type="button" className="services__select" aria-label={`Select ${service.title}`} aria-pressed={index === active} tabIndex={hidden ? -1 : 0} onClick={() => { if (!dragged.current) go(index) }} />
               <span className="services__arch" aria-hidden="true" />
               <span className="services__flourish services__flourish--top" aria-hidden="true" />
@@ -124,6 +131,7 @@ export default function OurServices() {
                   <svg viewBox="0 0 24 24" fill="none"><path d="M6 18 18 6M6 6h12v12" /></svg>
                 </span>
               </button>
+              </div>
             </div>
           )
         })}
