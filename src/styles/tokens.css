@@ -2,13 +2,12 @@
    Olive is the brand colour (logo and every button); the navbar is Nest tan
    with the olive logo on it. No gold, and never the moodboard's red. */
 :root {
-  --font-display: "Cormorant Garamond", Garamond, "Times New Roman", serif;
-  --font-body:    "Jost", "Helvetica Neue", Arial, sans-serif;
-  /* buttons (user's choice): Helvetica Neue ships with Mac and iPhone; there's no
-     free web version, so Windows and Android show Helvetica or Arial instead */
+  --font-display: "Distrampler", Georgia, serif;
+  --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Locally hosted Helvetica Neue also supplies the interface text. */
   --font-button:  "Helvetica Neue", Helvetica, Arial, sans-serif;
-  /* section headings (Figma "Why choose us frame": Google Sans Bold) */
-  --font-sans:    "Google Sans", "Jost", Arial, sans-serif;
+  /* Supporting interface labels. */
+  --font-sans: var(--font-body);
 
   /* surfaces */
   --cream:        #F8F4EE;  /* page */

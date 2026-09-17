@@ -101,8 +101,7 @@
   column-gap: var(--space-8);
 }
 
-/* Distrampler (the Figma's headline face) when it is available; until then
-   Cormorant at 500, which comes closest to its stroke weight */
+/* Locally hosted Distrampler, matching the brand heading artwork. */
 .hero h1 {
   font: 500 var(--text-hero)/1.04 "Distrampler", var(--font-display);
   letter-spacing: 0;
@@ -155,7 +154,7 @@
 .hero__lede {
   max-width: 34em;
   margin-top: var(--space-4);
-  font: 350 var(--text-lg)/1.55 var(--font-body); /* 350: Jost's match for Helvetica Neue Light */
+  font: 350 var(--text-lg)/1.55 var(--font-body); /* Helvetica Neue Light */
   letter-spacing: .01em;
   color: var(--cream);
   text-wrap: balance;

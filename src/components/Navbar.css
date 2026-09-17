@@ -6,6 +6,20 @@
   top: 0;
   z-index: 50;
   background: var(--tan);
+  transition: background-color .35s ease, box-shadow .35s ease;
+}
+
+.nav.is-scrolled {
+  box-shadow: inset 0 -1px 0 rgb(248 244 238 / .3), 0 4px 20px rgb(47 48 25 / .06);
+}
+
+/* Keep a warm tint and gently diffuse the moving imagery underneath. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nav {
+    -webkit-backdrop-filter: blur(18px) saturate(115%);
+    backdrop-filter: blur(18px) saturate(115%);
+  }
+  .nav.is-scrolled { background-color: rgb(194 167 136 / .70); }
 }
 
 /* three columns: the links sit in the true centre; the side columns never
@@ -36,7 +50,7 @@
 .nav__link {
   display: block;
   padding: var(--space-1) 0;
-  font: 350 var(--text-base)/1.5 var(--font-body); /* 350: Jost's match for Helvetica Neue Light */
+  font: 350 var(--text-base)/1.5 var(--font-body); /* Helvetica Neue Light */
   color: var(--olive-deep);
   text-decoration: underline transparent;
   text-decoration-thickness: from-font;

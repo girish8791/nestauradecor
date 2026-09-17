@@ -1,3 +1,4 @@
+@import './styles/fonts.css';
 @import './styles/tokens.css';
 @import './styles/buttons.css';
 
@@ -25,12 +26,12 @@ p { margin: 0; }
 
 :focus-visible { outline: 2px solid var(--olive-deep); outline-offset: 3px; }
 
-/* Type: Cormorant Garamond for headings, Jost for everything else */
+/* Local brand fonts: Distrampler headings, Helvetica Neue supporting text. */
 h1, h2, h3 { margin: 0; color: var(--olive-deep); text-wrap: balance; }
 h1    { font: 300 80px/1.04 var(--font-display); letter-spacing: -.01em; }
 h1 em { font-style: italic; color: var(--olive); }
 h2    { font: 400 52px/1.1 var(--font-display); }
-h3    { font: 500 26px/1.25 var(--font-display); }
+h3    { font: 500 26px/1.25 var(--font-body); }
 
 .eyebrow {
   font: 500 12px/1.4 var(--font-body);
