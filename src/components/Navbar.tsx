@@ -16,8 +16,17 @@ const DESKTOP = '(min-width: 821px)'
 export default function Navbar() {
   const [active, setActive] = useState('hero')
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
   const panel = useRef<HTMLUListElement>(null)
+
+  useEffect(() => {
+    // A small dead band avoids flicker when scrolling around the threshold.
+    const update = () => setScrolled(current => window.scrollY > (current ? 8 : 24))
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
+  }, [])
 
   // Underline the link of the section in the middle of the screen.
   useEffect(() => {
@@ -56,7 +65,7 @@ export default function Navbar() {
   const close = () => setOpen(false)
 
   return (
-    <nav className="nav" aria-label="Primary">
+    <nav className={`nav${scrolled ? ' is-scrolled' : ''}`} aria-label="Primary">
       <div className="wrap nav__inner">
         <a className="nav__logo" href="#hero" aria-label="Nest Aura Decor, home">
           <picture>

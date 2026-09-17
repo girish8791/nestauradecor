@@ -2,6 +2,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import WhyUs from './components/WhyUs'
 import OurProcess from './components/OurProcess'
+import OurServices from './components/OurServices'
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Hero />
         <WhyUs />
         <OurProcess />
+        <OurServices />
       </main>
     </>
   )

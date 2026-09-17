@@ -28,11 +28,12 @@ export default function WhyUs() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
 
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setIsVisible(true)
-      else if (entry.boundingClientRect.top >= innerHeight * .88) setIsVisible(false)
+      // Separate entrance and reset boundaries so small scroll reversals
+      // cannot restart the reveal while the section is still on screen.
+      if (entry.intersectionRatio >= .12) setIsVisible(true)
+      else if (entry.intersectionRatio === 0 && entry.boundingClientRect.top >= innerHeight) setIsVisible(false)
     }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -12% 0px',
+      threshold: [0, 0.12],
     })
 
     observer.observe(element)

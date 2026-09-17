@@ -73,7 +73,7 @@
 }
 
 .why__title {
-  font: 500 clamp(28px, 2.5vw, 36px)/1.25 "Distrampler", var(--font-display);
+  font: 500 clamp(28px, 2.5vw, 36px)/1.25 var(--font-body);
   letter-spacing: -.005em;
 }
 .why__sub {
@@ -157,47 +157,29 @@
 .why__cta,
 .why__photo {
   opacity: 0;
-  filter: blur(5px);
   transition:
     opacity 0.325s cubic-bezier(.16, 1, .3, 1),
-    transform 0.4s cubic-bezier(.16, 1, .3, 1),
-    filter 0.325s ease-out;
-  will-change: opacity, transform, filter;
+    transform 0.4s cubic-bezier(.16, 1, .3, 1);
+  will-change: opacity, transform;
 }
 
-.why__heading { transform: translateY(30px); }
+.why__heading { transform: translate3d(0, 12px, 0); }
 .why__title,
 .why__sub,
-.why__cta { transform: translateY(22px); }
-.why__point { transform: translateY(18px); }
+.why__cta { transform: translate3d(0, 10px, 0); }
+.why__point { transform: translate3d(0, 8px, 0); }
 .why__photo {
-  -webkit-clip-path: inset(10% 8% 10% 8% round var(--space-3));
-  clip-path: inset(10% 8% 10% 8% round var(--space-3));
-  transform: translateY(28px) scale(1.035);
+  transform: translate3d(0, 12px, 0);
   transform-origin: 50% 50%;
   transition:
     opacity 0.45s ease-out,
-    transform 0.575s cubic-bezier(.16, 1, .3, 1),
-    filter 0.45s ease-out,
-    -webkit-clip-path 0.55s cubic-bezier(.16, 1, .3, 1),
-    clip-path 0.55s cubic-bezier(.16, 1, .3, 1);
+    transform 0.575s cubic-bezier(.16, 1, .3, 1);
 }
 
-/* Reveal the branch from its bottom edge upward, like the ornament is growing
-   into the composition. A small upward drift softens the clipping edge and
-   makes the movement feel organic rather than like a quick wipe. */
+/* Keep the large masked decoration stationary while it fades in. */
 .why__branch {
-  opacity: .35;
-  -webkit-clip-path: inset(100% 0 0 0);
-  clip-path: inset(100% 0 0 0);
-  transform: translateY(72px) scale(.985);
-  transform-origin: 70% 80%;
-  transition:
-    opacity 0.7s ease-out,
-    transform 1.325s cubic-bezier(.16, 1, .3, 1),
-    -webkit-clip-path 1.275s cubic-bezier(.22, 1, .36, 1),
-    clip-path 1.275s cubic-bezier(.22, 1, .36, 1);
-  will-change: opacity, transform, clip-path;
+  opacity: 0;
+  transition: opacity 1.325s ease-out;
 }
 
 .why.is-visible .why__heading,
@@ -207,19 +189,12 @@
 .why.is-visible .why__cta,
 .why.is-visible .why__photo {
   opacity: 1;
-  filter: none;
-  transform: none;
-  -webkit-clip-path: inset(0 round var(--space-3));
-  clip-path: inset(0 round var(--space-3));
-  will-change: auto;
+  transform: translate3d(0, 0, 0);
 }
 
 .why.is-visible .why__branch {
   opacity: 1;
-  -webkit-clip-path: inset(0);
-  clip-path: inset(0);
-  transform: none;
-  will-change: auto;
+
 }
 
 /* Reading order: heading to promise, each feature, then the button. The branch
@@ -275,6 +250,7 @@
   .why__photo,
   .why__branch {
     opacity: 1;
+    transition: none;
     filter: none;
     transform: none;
     -webkit-clip-path: none;
