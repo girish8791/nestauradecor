@@ -3,6 +3,9 @@ import Hero from './components/Hero'
 import WhyUs from './components/WhyUs'
 import OurProcess from './components/OurProcess'
 import OurServices from './components/OurServices'
+import EndlessPossibilities from './components/EndlessPossibilities'
+import PeacePriority from './components/PeacePriority'
+import './styles/layout.css'
 
 export default function App() {
   return (
@@ -14,6 +17,8 @@ export default function App() {
         <WhyUs />
         <OurProcess />
         <OurServices />
+        <EndlessPossibilities />
+        <PeacePriority />
       </main>
     </>
   )

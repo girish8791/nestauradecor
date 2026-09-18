@@ -1,0 +1,53 @@
+/* Shared page rhythm; component styles still own their artwork and motion. */
+:root {
+  --section-space: clamp(56px, 7vw, 96px);
+  --section-heading-size: clamp(32px, 4vw, 52px);
+  --section-content-gap: clamp(32px, 4.5vw, 64px);
+}
+
+.why, .possibilities { padding-block: var(--section-space); }
+.process { padding-top: var(--section-space); }
+.why__heading, .process__header h2, .services .services__scene h2,
+.possibilities__header h2 {
+  font-size: var(--section-heading-size);
+  line-height: 1.15;
+  text-align: center;
+}
+.process__header, .possibilities__header { max-width: 760px; margin-inline: auto; }
+.process__header > p, .possibilities__header > p {
+  max-width: 54ch;
+  margin: clamp(16px, 2vw, 24px) auto 0;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.process__header h2 { margin-bottom: 0; }
+.why__body, .process__journey { margin-top: var(--section-content-gap); }
+.possibilities__header { margin-bottom: var(--section-content-gap); }
+.possibilities__projects { gap: var(--section-space); }
+.hero__copy, .why__copy, .process__copy, .possibilities__copy { min-width: 0; }
+.hero__copy, .why__copy, .possibilities__copy { text-align: left; }
+.why__sub, .possibilities__copy p { font-size: clamp(16px, 1.5vw, 18px); line-height: 1.65; text-wrap: pretty; }
+.why__point { align-items: flex-start; }
+.why__point > span:last-child { min-width: 0; }
+.possibilities__project { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(32px, 5vw, 72px); }
+.possibilities__project:nth-child(even) { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+
+/* Move the carousel heading and cards together, preserving their proportions. */
+.services__scene { --services-shift: calc(var(--section-space) - 11.685417cqw); height: calc(71.111111cqw + var(--services-shift)); }
+.services .services__scene h2 { top: var(--section-space); padding-inline: var(--gutter); }
+.services__card { top: calc(19.195694cqw + var(--services-shift)); }
+.services__controls { padding-bottom: var(--section-space); }
+@media (max-width: 900px) {
+  .services__scene { --services-shift: calc(var(--section-space) - 64px); height: calc(650px + var(--services-shift)); }
+  .services__card { top: calc(150px + var(--services-shift)); }
+}
+@media (max-width: 860px) {
+  .possibilities__project, .possibilities__project:nth-child(even) { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .possibilities__copy p { max-width: 58ch; }
+  .why__body { row-gap: var(--section-content-gap); }
+}
+@media (max-width: 380px) {
+  .services__scene { height: calc(600px + var(--services-shift)); }
+  .services__controls { gap: 10px; }
+}
