@@ -92,10 +92,12 @@ export default function OurProcess() {
         runner.setAttribute('cy', `${point.y}`)
       }
 
-      // Never hide content again. Fast scrolling can pass several rows in one
-      // frame, so reveal everything already inside (or above) the viewport.
+      // Reveal each step only when the travelling dot reaches its centre.
+      // Once revealed, keep it visible so returning upward does not replay it.
       items.forEach(item => {
-        if (motion.matches || item.getBoundingClientRect().top < innerHeight * .9) item.classList.add('is-active')
+        if (motion.matches || (visible && item.offsetTop + item.offsetHeight * .5 <= targetY + 12)) {
+          item.classList.add('is-active')
+        }
       })
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
