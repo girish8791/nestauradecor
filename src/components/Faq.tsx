@@ -30,13 +30,17 @@ export default function Faq() {
 
   useEffect(() => {
     const element = section.current
-    if (!element || !('IntersectionObserver' in window)) return
+    if (!element) return
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      element.classList.add('is-visible')
+      return
+    }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         element.classList.add('is-visible')
         observer.disconnect()
       }
-    }, { threshold: .15 })
+    }, { threshold: .01, rootMargin: '0px 0px 18% 0px' })
     observer.observe(element)
     return () => observer.disconnect()
   }, [])

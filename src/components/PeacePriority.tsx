@@ -14,9 +14,11 @@ export default function PeacePriority() {
     showWithoutMotion()
     element.classList.add('has-scroll-reveal')
     const observer = new IntersectionObserver(([entry]) => {
-      if (motion.matches || entry.intersectionRatio >= .15) element.classList.add('is-visible')
-      else if (!entry.isIntersecting && entry.boundingClientRect.top >= innerHeight) element.classList.remove('is-visible')
-    }, { threshold: [0, .15] })
+      if (motion.matches || entry.isIntersecting) {
+        element.classList.add('is-visible')
+        observer.disconnect()
+      }
+    }, { threshold: .01, rootMargin: '0px 0px 18% 0px' })
     observer.observe(element.querySelector('.peace-priority__scene')!)
     motion.addEventListener('change', showWithoutMotion)
     return () => {
