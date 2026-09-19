@@ -61,9 +61,8 @@ export default function OurServices() {
     if (!('IntersectionObserver' in window)) { return () => media.removeEventListener('change', change) }
     const observer = new IntersectionObserver(([entry]) => {
       setInView(entry.isIntersecting)
-      if (entry.intersectionRatio >= .12) setRevealed(true)
-      else if (entry.intersectionRatio === 0 && entry.boundingClientRect.top >= innerHeight) setRevealed(false)
-    }, { threshold: [0, .12] })
+      if (entry.isIntersecting) setRevealed(true)
+    }, { threshold: .01, rootMargin: '0px 0px 18% 0px' })
     observer.observe(section.current!)
     return () => { observer.disconnect(); media.removeEventListener('change', change) }
   }, [])

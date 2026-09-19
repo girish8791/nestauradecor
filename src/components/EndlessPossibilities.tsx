@@ -74,14 +74,12 @@ export default function EndlessPossibilities() {
     const items = element.querySelectorAll('.possibilities__header, .possibilities__project')
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (motion.matches || entry.intersectionRatio >= .12) {
+        if (motion.matches || entry.isIntersecting) {
           entry.target.classList.add('is-visible')
-        } else if (!entry.isIntersecting && entry.boundingClientRect.top >= innerHeight) {
-          // Replay when returning above a row, just like the services entrance.
-          entry.target.classList.remove('is-visible')
+          observer.unobserve(entry.target)
         }
       })
-    }, { threshold: [0, .12] })
+    }, { threshold: .01, rootMargin: '0px 0px 18% 0px' })
     const showWithoutMotion = () => {
       if (motion.matches) items.forEach(item => item.classList.add('is-visible'))
     }

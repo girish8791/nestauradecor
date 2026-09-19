@@ -1,4 +1,4 @@
-/* Hero typography; winding process layout with bidirectional scroll reveals. */
+/* Hero typography; winding process layout with one-time scroll reveals. */
 .process {
   --process-heading: "Distrampler", var(--font-display);
   --process-body: var(--font-body);

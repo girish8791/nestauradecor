@@ -5,6 +5,8 @@ import OurProcess from './components/OurProcess'
 import OurServices from './components/OurServices'
 import EndlessPossibilities from './components/EndlessPossibilities'
 import PeacePriority from './components/PeacePriority'
+import Faq from './components/Faq'
+import MeetTheBrains from './components/MeetTheBrains'
 import './styles/layout.css'
 
 export default function App() {
@@ -19,6 +21,8 @@ export default function App() {
         <OurServices />
         <EndlessPossibilities />
         <PeacePriority />
+        <Faq />
+        <MeetTheBrains />
       </main>
     </>
   )

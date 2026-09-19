@@ -149,7 +149,7 @@
    The section enters as one composed scene: the heading leads, the promise and
    feature list follow in reading order, and the image settles into place at the
    right. WhyUs.tsx adds .is-visible the first time the section reaches the
-   viewport, and resets it when scrolling back above the section. */
+   viewport and keeps it visible after the entrance completes. */
 .why__heading,
 .why__title,
 .why__sub,
