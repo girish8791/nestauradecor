@@ -7,6 +7,7 @@ import EndlessPossibilities from './components/EndlessPossibilities'
 import PeacePriority from './components/PeacePriority'
 import Faq from './components/Faq'
 import MeetTheBrains from './components/MeetTheBrains'
+import Footer from './components/Footer'
 import './styles/layout.css'
 
 export default function App() {
@@ -21,9 +22,10 @@ export default function App() {
         <OurServices />
         <EndlessPossibilities />
         <PeacePriority />
-        <Faq />
         <MeetTheBrains />
+        <Faq />
       </main>
+      <Footer />
     </>
   )
 }
