@@ -1,6 +1,13 @@
 .brains {
   padding-block: var(--section-space);
-  background: var(--cream);
+  background-color: var(--cream);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--olive) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--olive) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to right, color-mix(in srgb, var(--olive-deep) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--olive-deep) 5%, transparent) 1px, transparent 1px);
+  background-size: 72px 72px, 72px 72px, 288px 288px, 288px 288px;
+  background-position: center top;
   overflow: clip;
 }
 .brains__header { text-align: center; }
@@ -114,6 +121,7 @@
   @keyframes brains-card-in { to { opacity: 1; translate: 0 0; } }
 }
 @media (max-width: 760px) {
+  .brains { background-size: 48px 48px, 48px 48px, 192px 192px, 192px 192px; }
   .brains__grid { grid-template-columns: minmax(0, 400px); }
   .person-card__meta { transform: none; }
   .person-card__meta p { opacity: 1; }
