@@ -71,6 +71,13 @@
   .possibilities__copy li { font-size: 11px; letter-spacing: .1em; }
   .possibilities__copy ul { --sep: 18px; }
 }
+/* phones: a hairline between projects so each reads as its own chapter, and
+   taller before/after photos, so the change fills more of the screen */
+@media (max-width: 560px) {
+  .possibilities__projects { gap: var(--space-6); }
+  .possibilities__project + .possibilities__project { padding-top: var(--space-6); border-top: 1px solid color-mix(in srgb, var(--olive) 16%, transparent); }
+  .possibilities__comparison { aspect-ratio: 4 / 3.4; }
+}
 @media (max-width: 400px) {
   .possibilities__comparison { border-radius: 12px; }
   .possibilities__label { top: 12px; }

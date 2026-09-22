@@ -193,7 +193,12 @@
 @media (max-width: 600px) {
   .footer { margin-top: 72px; }
   .footer-form { margin-top: -40px; padding: 24px 20px; border-radius: 20px; }
-  .footer__links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Talk to us and Follow stack in the left column beside Explore, and each
+     link gets a full-size touch row */
+  .footer__links { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-2); }
+  .footer__links > :nth-child(2) { grid-row: span 2; }
+  .footer__links a, .footer__links span { padding-block: 8px; font-size: 15px; }
+  .footer__links h3 { margin-bottom: 2px; }
   .footer-form__two { grid-template-columns: minmax(0, 1fr); }
   .footer__bar { flex-direction: column; }
 }

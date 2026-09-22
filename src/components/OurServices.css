@@ -48,7 +48,7 @@
 .services__controls { position: relative; display: flex; justify-content: center; align-items: center; gap: 12px; padding: 0 16px 40px; }
 .services__controls button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--olive); border-radius: 50%; color: var(--olive-deep); cursor: pointer; font-size: 22px; }
 .services__controls .services__dot { width: 8px; height: 8px; border: 0; background: var(--linen); padding: 0; position: relative; }
-.services__dot::before { content: ''; position: absolute; inset: -12px -4px; }
+.services__dot::before { content: ''; position: absolute; inset: -18px -7px; } /* a 22 x 44 touch area around the 8px dot */
 .services__controls .services__dot[aria-pressed='true'] { background: var(--olive); }
 
 @media (max-width: 900px) {
