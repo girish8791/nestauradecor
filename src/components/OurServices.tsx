@@ -3,12 +3,13 @@ import { createPortal } from 'react-dom'
 import './OurServices.css'
 import serviceGalleries from './serviceGalleries.json'
 import ServiceLightbox from './ServiceLightbox'
+import { REDUCED_MOTION, useMediaQuery } from '../useMediaQuery'
 
 const services = [
   { id: 0, title: 'Turnkey Projects', description: 'Complete interior solutions managed seamlessly from initial design to final project handover.' },
   { id: 1, title: 'Living Spaces', description: 'Beautiful, functional living spaces thoughtfully designed around your lifestyle and everyday comfort.' },
   { id: 2, title: 'Pooja Units', description: 'Elegant, space-efficient pooja units crafted for peaceful rituals and beautiful everyday living.' },
-  { id: 3, title: 'Cafe Interiors', description: 'Inviting cafe spaces designed to enhance customer experience, functionality, comfort, and brand identity.' },
+  { id: 3, title: 'Café Interiors', description: 'Inviting café spaces designed to enhance customer experience, functionality, comfort, and brand identity.' },
   { id: 4, title: 'Kitchen Interiors', description: 'Functional kitchens combining smart storage, efficient layouts, durable finishes, and modern aesthetics.' },
   { id: 5, title: 'Bedroom Interiors', description: 'Comfortable, calming bedrooms designed with personalised layouts, storage, lighting, and finishes.' },
 ]
@@ -25,9 +26,10 @@ export default function OurServices() {
   const [explored, setExplored] = useState<number | null>(null)
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
-  const [inView, setInView] = useState(() => !('IntersectionObserver' in window))
-  const [revealed, setRevealed] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window))
-  const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches)
+  // useMediaQuery is false while prerendering, so the markup matches the server.
+  const reduced = useMediaQuery(REDUCED_MOTION)
+  const [inView, setInView] = useState(false)
+  const [revealed, setRevealed] = useState(false)
   const go = (index: number) => setActive((index + services.length) % services.length)
 
   const closeGallery = useCallback(() => {
@@ -36,16 +38,12 @@ export default function OurServices() {
   }, [])
 
   useEffect(() => {
-    const media = matchMedia('(prefers-reduced-motion: reduce)')
-    const change = () => { setReduced(media.matches); if (media.matches) setRevealed(true) }
-    media.addEventListener('change', change)
-    if (!('IntersectionObserver' in window)) { return () => media.removeEventListener('change', change) }
     const observer = new IntersectionObserver(([entry]) => {
       setInView(entry.isIntersecting)
       if (entry.isIntersecting) setRevealed(true)
     }, { threshold: .01, rootMargin: '0px 0px 18% 0px' })
     observer.observe(section.current!)
-    return () => { observer.disconnect(); media.removeEventListener('change', change) }
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {

@@ -8,13 +8,33 @@
     <meta name="theme-color" content="#C2A788" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Google+Sans:wght@500;700&family=Jost:wght@300..500&display=swap" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nest Aura Decor" />
+    <meta property="og:title" content="Nest Aura Decor | End-to-end Interiors" />
+    <meta property="og:description" content="Interiors with an aura of their own, designed and built under one roof, from the first sketch to the final detail." />
+    <meta property="og:locale" content="en_IN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- The hero photo and the two faces used above the fold start downloading
+         with the script, instead of after the page has rendered. -->
+    <link rel="preload" as="image" type="image/avif" fetchpriority="high"
+          imagesrcset="/media/hero-room-900.avif 900w, /media/hero-room-1500.avif 1500w, /media/hero-room-2400.avif 2400w" imagesizes="100vw" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/distrampler.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/helvetica-neue-light.woff2" crossorigin />
   </head>
   <body>
     <div id="root"></div>
+    <!-- The page arrives prerendered, so fade the hero photo in as soon as it
+         has loaded rather than waiting for the script (1.2s fallback, as in
+         Hero.tsx). The class sits on <html>, outside what React manages. -->
+    <script>
+      (function () {
+        var img = document.querySelector('.hero__photo img')
+        if (!img) return
+        var done = function () { document.documentElement.classList.add('hero-photo-ready') }
+        if (img.complete) done()
+        else { img.addEventListener('load', done); img.addEventListener('error', done); setTimeout(done, 1200) }
+      })()
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-9

@@ -34,7 +34,7 @@ export default function PeacePriority() {
           <span className="peace-priority__label peace-priority__your">Your</span>
           <span className="peace-priority__word peace-priority__peace"><span>Peace</span></span>
           <div className="peace-priority__image">
-            <img src="/media/peace-priority.png" alt="" width={604} height={506} loading="lazy" decoding="async" />
+            <img src="/media/peace-priority.webp" alt="" width={604} height={506} loading="lazy" decoding="async" />
           </div>
           <span className="peace-priority__label peace-priority__our">Our</span>
           <span className="peace-priority__word peace-priority__priority"><span>Priority</span></span>

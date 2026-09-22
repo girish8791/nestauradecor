@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './WhyUs.css'
+import { REDUCED_MOTION, useMediaQuery } from '../useMediaQuery'
 
 /* From the Figma "Why choose us frame": a centred heading; the promise and five
    points at the left; the team photo card at the right, with the bronze
@@ -16,20 +17,19 @@ const BRANCH_SIZES = 'min(1144px, 79.5vw)' // matches .why__branch in WhyUs.css
 
 export default function WhyUs() {
   const section = useRef<HTMLElement>(null)
-  const [isVisible, setIsVisible] = useState(() =>
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    || !('IntersectionObserver' in window),
-  )
+  // Hidden until the section reaches the viewport; shown at once when motion is
+  // reduced (useMediaQuery is false while prerendering, so the markup matches).
+  const reduced = useMediaQuery(REDUCED_MOTION)
+  const [seen, setSeen] = useState(false)
+  const isVisible = reduced || seen
 
   useEffect(() => {
     const element = section.current
-    if (!element) return
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return
+    if (!element || reduced) return
 
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        setIsVisible(true)
+        setSeen(true)
         observer.disconnect()
       }
     }, {
@@ -39,7 +39,7 @@ export default function WhyUs() {
 
     observer.observe(element)
     return () => observer.disconnect()
-  }, [])
+  }, [reduced])
 
   return (
     <section

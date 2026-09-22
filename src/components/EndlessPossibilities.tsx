@@ -7,14 +7,23 @@ type Project = {
   description: string
   details: string[]
   before: string
+  beforeWidth: number
   after: string
+  afterWidth: number
 }
 
+// Photos wider than 800px also have an 800px copy (name-800.webp) for phones.
+// The comparison box fills the column: full width less the gutters on phones,
+// about 640px beside the copy on desktop.
+const PHOTO_SIZES = '(max-width: 860px) calc(100vw - 48px), 640px'
+const photoSrcSet = (src: string, width: number) =>
+  width > 800 ? `${src.replace('.webp', '-800.webp')} 800w, ${src} ${width}w` : undefined
+
 const projects: Project[] = [
-  { id: 'commercial', before: '/media/comparisons/commercial-before.webp', after: '/media/comparisons/commercial-after.webp', title: 'Commercial Shops', description: 'Retail interiors designed around your brand, with thoughtful displays, intuitive layouts, and a welcoming customer experience.', details: ['Brand identity', 'Display & storage', 'Customer flow'] },
-  { id: 'turnkey', before: '/media/comparisons/turnkey-before.webp', after: '/media/comparisons/turnkey-after.webp', title: 'Turnkey Projects', description: 'Complete interior solutions managed seamlessly from initial design to final project handover.', details: ['Design to handover', 'One team', 'Every detail'] },
-  { id: 'cafe', before: '/media/comparisons/cafe-before.webp', after: '/media/comparisons/cafe-after.webp', title: 'Café Interior', description: 'Inviting café interiors designed to blend brand personality, customer comfort, functionality, and memorable dining experiences.', details: ['Brand personality', 'Comfortable seating', 'Thoughtful lighting'] },
-  { id: 'clinic', before: '/media/comparisons/clinic-before.webp', after: '/media/comparisons/clinic-after.webp', title: 'Clinic Interior', description: 'Thoughtfully designed clinic interiors that balance patient comfort, efficient workflows, hygiene, privacy, and professional aesthetics.', details: ['Patient comfort', 'Efficient workflows', 'Privacy'] },
+  { id: 'commercial', before: '/media/comparisons/commercial-before.webp', beforeWidth: 1536, after: '/media/comparisons/commercial-after.webp', afterWidth: 1600, title: 'Commercial Shops', description: 'Retail interiors designed around your brand, with thoughtful displays, intuitive layouts, and a welcoming customer experience.', details: ['Brand identity', 'Display & storage', 'Customer flow'] },
+  { id: 'turnkey', before: '/media/comparisons/turnkey-before.webp', beforeWidth: 1024, after: '/media/comparisons/turnkey-after.webp', afterWidth: 853, title: 'Turnkey Projects', description: 'Complete interior solutions managed seamlessly from initial design to final project handover.', details: ['Design to handover', 'One team', 'Every detail'] },
+  { id: 'cafe', before: '/media/comparisons/cafe-before.webp', beforeWidth: 1109, after: '/media/comparisons/cafe-after.webp', afterWidth: 680, title: 'Café Interior', description: 'Inviting café interiors designed to blend brand personality, customer comfort, functionality, and memorable dining experiences.', details: ['Brand personality', 'Comfortable seating', 'Thoughtful lighting'] },
+  { id: 'clinic', before: '/media/comparisons/clinic-before.webp', beforeWidth: 1086, after: '/media/comparisons/clinic-after.webp', afterWidth: 960, title: 'Clinic Interior', description: 'Thoughtfully designed clinic interiors that balance patient comfort, efficient workflows, hygiene, privacy, and professional aesthetics.', details: ['Patient comfort', 'Efficient workflows', 'Privacy'] },
 ]
 
 function Comparison({ project }: { project: Project }) {
@@ -46,10 +55,10 @@ function Comparison({ project }: { project: Project }) {
     <figure className="possibilities__figure">
       <div ref={panel} className="possibilities__comparison" style={{ '--split': `${position}%` } as CSSProperties}>
         <div className="possibilities__layer">
-          <img src={project.after} alt={`${project.title} after completion`} loading="lazy" decoding="async" draggable={false} />
+          <img src={project.after} srcSet={photoSrcSet(project.after, project.afterWidth)} sizes={PHOTO_SIZES} alt={`${project.title} after completion`} loading="lazy" decoding="async" draggable={false} />
         </div>
         <div className="possibilities__layer possibilities__before">
-          <img src={project.before} alt={`${project.title} before renovation`} loading="lazy" decoding="async" draggable={false} />
+          <img src={project.before} srcSet={photoSrcSet(project.before, project.beforeWidth)} sizes={PHOTO_SIZES} alt={`${project.title} before renovation`} loading="lazy" decoding="async" draggable={false} />
         </div>
         <span className="possibilities__label possibilities__label--before">Before</span>
         <span className="possibilities__label possibilities__label--after">After</span>
