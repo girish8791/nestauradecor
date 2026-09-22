@@ -6,7 +6,7 @@
 
 // Who gets the new-enquiry email. Several addresses: separate them with commas.
 // Left empty, it goes to the Google account that deployed this script.
-const NOTIFY = ''
+const NOTIFY = 'approvedavi@gmail.com'
 
 const SHEET = 'Leads'
 const COLUMNS = ['Received', 'Name', 'Phone', 'Location', 'Type of space', 'Budget', 'Message', 'Page']
@@ -35,6 +35,11 @@ function doPost(e) {
     body: lines.join('\n') + (whatsapp ? '\n\nWhatsApp: ' + whatsapp : '') + '\n\nAll enquiries: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl(),
   })
   return reply({ ok: true })
+}
+
+// Run once from the editor: grants the email permission and sends a test email.
+function testEmail() {
+  MailApp.sendEmail(NOTIFY || Session.getEffectiveUser().getEmail(), 'Nest Aura Decor: form emails are working', 'New call-back requests from the website will arrive like this.')
 }
 
 function sheet() {
