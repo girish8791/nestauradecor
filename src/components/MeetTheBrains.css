@@ -44,6 +44,15 @@
     linear-gradient(160deg, var(--ivory), var(--sand));
   transition: transform .8s var(--ease);
 }
+.person-card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  transition: transform .8s var(--ease);
+}
 .person-card__placeholder span {
   position: absolute;
   top: 12%;
@@ -101,7 +110,9 @@
   transition: opacity .4s ease .18s;
 }
 .person-card:hover .person-card__placeholder,
-.person-card:focus-visible .person-card__placeholder { transform: scale(1.05); }
+.person-card:focus-visible .person-card__placeholder,
+.person-card:hover .person-card__photo,
+.person-card:focus-visible .person-card__photo { transform: scale(1.05); }
 .person-card:hover .person-card__meta,
 .person-card:focus-visible .person-card__meta { transform: none; }
 .person-card:hover .person-card__meta p,
