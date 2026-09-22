@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { createPortal } from 'react-dom'
 import './OurServices.css'
 import serviceGalleries from './serviceGalleries.json'
+import ServiceLightbox from './ServiceLightbox'
 
 const services = [
   { id: 0, title: 'Turnkey Projects', description: 'Complete interior solutions managed seamlessly from initial design to final project handover.' },
@@ -20,11 +21,8 @@ export default function OurServices() {
   const section = useRef<HTMLElement>(null)
   const gesture = useRef<{ x: number; y: number } | null>(null)
   const dragged = useRef(false)
-  const dialog = useRef<HTMLDialogElement>(null)
   const exploreTrigger = useRef<HTMLButtonElement | null>(null)
-  const [closing, setClosing] = useState(false)
   const [explored, setExplored] = useState<number | null>(null)
-  const [galleryIndex, setGalleryIndex] = useState(0)
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
   const [inView, setInView] = useState(() => !('IntersectionObserver' in window))
@@ -32,27 +30,10 @@ export default function OurServices() {
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches)
   const go = (index: number) => setActive((index + services.length) % services.length)
 
-  useEffect(() => {
-    if (!closing) return
-    const timer = window.setTimeout(() => { setExplored(null); setClosing(false) }, reduced ? 0 : 320)
-    return () => window.clearTimeout(timer)
-  }, [closing, reduced])
-
-  useEffect(() => {
-    if (explored === null) return
-    const modal = dialog.current!
-    const overflow = document.documentElement.style.overflow
-    const gutter = document.documentElement.style.scrollbarGutter
-    document.documentElement.style.scrollbarGutter = 'stable'
-    document.documentElement.style.overflow = 'hidden'
-    modal.showModal()
-    return () => {
-      modal.close()
-      document.documentElement.style.overflow = overflow
-      document.documentElement.style.scrollbarGutter = gutter
-      exploreTrigger.current?.focus({ preventScroll: true })
-    }
-  }, [explored])
+  const closeGallery = useCallback(() => {
+    setExplored(null)
+    exploreTrigger.current?.focus({ preventScroll: true })
+  }, [])
 
   useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)')
@@ -124,7 +105,7 @@ export default function OurServices() {
               <span className="services__name">{service.title}</span>
               <span className="services__description">{service.description}</span></span>
               <button type="button" className="services__explore" aria-label={`Explore ${service.title}`} aria-haspopup="dialog" tabIndex={hidden ? -1 : 0}
-                onClick={event => { if (!dragged.current) { exploreTrigger.current = event.currentTarget; setGalleryIndex(0); setExplored(index) } }}>
+                onClick={event => { if (!dragged.current) { exploreTrigger.current = event.currentTarget; setExplored(index) } }}>
                 Explore
                 <span className="services__explore-arrow" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none"><path d="M6 18 18 6M6 6h12v12" /></svg>
@@ -140,30 +121,7 @@ export default function OurServices() {
         {services.map((service, index) => <button type="button" className="services__dot" key={service.id} aria-label={`Show service ${index + 1}`} aria-pressed={index === active} onClick={() => go(index)} />)}
         <button type="button" onClick={() => go(active + 1)} aria-label="Next service"><NavigationArrow /></button>
       </div>
-      {explored !== null && createPortal(
-        <dialog ref={dialog} className={`services-gallery${closing ? ' is-closing' : ''}`} aria-labelledby="services-gallery-title"
-          onCancel={event => { event.preventDefault(); setClosing(true) }}
-          onClick={event => { if (event.target === event.currentTarget) { const bounds = event.currentTarget.getBoundingClientRect(); if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) setClosing(true) } }}
-          onWheel={event => event.stopPropagation()} onTouchMove={event => event.stopPropagation()} onKeyDown={event => { event.stopPropagation(); if (event.key === 'Tab') { const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button')); const first = buttons[0]; const last = buttons[buttons.length - 1]; if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() } } }}>
-          <h2 id="services-gallery-title" className="sr-only">{services[explored].title} gallery</h2>
-          <button type="button" className="services-gallery__close" aria-label="Close gallery" onClick={() => setClosing(true)} autoFocus>
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
-          </button>
-          <div className="services-gallery__frame">
-            {Array.from({ length: Math.min(5, serviceGalleries[explored].length) }, (_, slot) => {
-              const photoIndex = (galleryIndex + slot) % serviceGalleries[explored].length
-              return <div className={slot === 0 ? 'services-gallery__photo services-gallery__photo--main' : 'services-gallery__photo'} key={slot}>
-                <img src={serviceGalleries[explored][photoIndex]} alt={services[explored].title + ' inspiration ' + (photoIndex + 1)} />
-              </div>
-            })}
-          </div>
-          {serviceGalleries[explored].length > 5 && <div className="services-gallery__navigation">
-            <button type="button" aria-label="Previous gallery photo" onClick={() => setGalleryIndex(value => (value - 1 + serviceGalleries[explored].length) % serviceGalleries[explored].length)}><NavigationArrow previous /></button>
-            <span aria-live="polite">{galleryIndex + 1} / {serviceGalleries[explored].length}</span>
-            <button type="button" aria-label="Next gallery photo" onClick={() => setGalleryIndex(value => (value + 1) % serviceGalleries[explored].length)}><NavigationArrow /></button>
-          </div>}
-        </dialog>, document.body
-      )}
+      {explored !== null && createPortal(<ServiceLightbox title={services[explored].title} photos={serviceGalleries[explored]} onClose={closeGallery} />, document.body)}
     </section>
   )
 }

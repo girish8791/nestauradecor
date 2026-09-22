@@ -4,13 +4,14 @@ import './MeetTheBrains.css'
 const people = [
   {
     name: 'Founder name',
-    role: 'Principal designer',
-    quote: 'I still measure every site myself. It is the only way to draw a plan that fits how you live.',
+    role: 'Founder',
+    quote: 'Every module leaves our workshop finished. Site days are for fitting, not fixing.',
   },
   {
-    name: 'Co-founder name',
-    role: 'Head of production',
-    quote: 'Every module leaves our workshop finished. Site days are for fitting, not fixing.',
+    name: 'Tannu Bharadwaj',
+    role: 'Interior design head',
+    photo: '/media/team/tannu-bharadwaj.jpg',
+    quote: 'I still measure every site myself. It is the only way to draw a plan that fits how you live.',
   },
 ]
 
@@ -45,9 +46,11 @@ export default function MeetTheBrains() {
         <div className="brains__grid">
           {people.map((person, index) => (
             <article className="person-card" key={person.role} tabIndex={0} style={{ animationDelay: `${index * .12}s` }}>
-              <div className="person-card__placeholder" role="img" aria-label={`${person.name} portrait placeholder`}>
-                <span>Portrait<br />placeholder</span>
-              </div>
+              {person.photo
+                ? <img className="person-card__photo" src={person.photo} alt={`${person.name}, ${person.role}`} width={1086} height={1448} loading="lazy" decoding="async" />
+                : <div className="person-card__placeholder" role="img" aria-label={`${person.name} portrait placeholder`}>
+                    <span>Portrait<br />placeholder</span>
+                  </div>}
               <div className="person-card__meta">
                 <h3>{person.name}</h3>
                 <span>{person.role}</span>
