@@ -25,7 +25,8 @@ export default function Footer() {
           <div className="footer__links">
             <div>
               <h3>Talk to us</h3>
-              <span>Phone coming soon</span>
+              <a href="tel:+919354326246">+91 93543 26246</a>
+              <a href="https://wa.me/919354326246" target="_blank" rel="noreferrer">WhatsApp</a>
               <span>Email coming soon</span>
             </div>
             <div>
