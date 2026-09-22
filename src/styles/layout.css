@@ -1,12 +1,39 @@
-/* Shared page rhythm; component styles still own their artwork and motion. */
+/* Shared page rhythm; component styles still own their artwork and motion.
+   Every section uses the same vertical padding and heading-to-content gap,
+   content blocks share one reading width, and backgrounds alternate
+   (cream / sand) so each section reads as its own chapter. */
 :root {
   --section-space: clamp(56px, 7vw, 96px);
   --section-heading-size: clamp(32px, 4vw, 52px);
   --section-content-gap: clamp(32px, 4.5vw, 64px);
+  --content-max: 1200px;
+  /* how far the call-back form rises out of the footer into the FAQ above */
+  --footer-rise: 72px;
 }
+@media (max-width: 960px) { :root { --footer-rise: 56px; } }
+@media (max-width: 600px) { :root { --footer-rise: 40px; } }
 
-.why, .possibilities { padding-block: var(--section-space); }
-.process { padding-top: var(--section-space); }
+.why, .possibilities, .process { padding-block: var(--section-space); }
+.process__step { min-height: 280px; }
+.possibilities__header, .possibilities__projects { max-width: var(--content-max); margin-inline: auto; }
+.brains__grid, .faq-section__list { margin-top: var(--section-content-gap); }
+.faq-section { padding-bottom: calc(var(--section-space) + var(--footer-rise)); }
+.footer { margin-top: 0; }
+.footer-form { margin-top: calc(-1 * var(--footer-rise)); }
+@media (max-width: 760px) { .process__step { min-height: 232px; } }
+
+/* Scrolling back up (scrollDirection.ts): sections coming in from above are
+   shown settled instead of replaying their entrance. Zero durations (not
+   "none") let fill-forwards entrances land on their final frame. Left out:
+   Our Process, whose steps follow the scroll both ways, and Meet the Brains,
+   whose cards enter with a keyframe animation that would restart when the
+   duration is restored. */
+html[data-scroll='up'] main > section:not(.hero, .process, .brains) :is(*, *::before, *::after) {
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+}
 .why__heading, .process__header h2, .services .services__scene h2,
 .possibilities__header h2 {
   font-size: var(--section-heading-size);
@@ -24,7 +51,7 @@
 .process__header h2 { margin-bottom: 0; }
 .why__body, .process__journey { margin-top: var(--section-content-gap); }
 .possibilities__header { margin-bottom: var(--section-content-gap); }
-.possibilities__projects { gap: var(--section-space); }
+.possibilities__projects { gap: var(--section-content-gap); }
 .hero__copy, .why__copy, .process__copy, .possibilities__copy { min-width: 0; }
 .hero__copy, .why__copy, .possibilities__copy { text-align: left; }
 .why__sub, .possibilities__copy p { font-size: clamp(16px, 1.5vw, 18px); line-height: 1.65; text-wrap: pretty; }

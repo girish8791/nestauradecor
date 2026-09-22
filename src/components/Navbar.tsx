@@ -3,15 +3,16 @@ import './Navbar.css'
 
 const links = [
   { id: 'hero', label: 'Home' },
-  { id: 'about', label: 'About' },
+  { id: 'why', label: 'About' },
   { id: 'process', label: 'Process' },
   { id: 'services', label: 'Services' },
+  { id: 'possibilities', label: 'Possibilities' },
   { id: 'faq', label: 'FAQs' },
 ]
 
 // Above this width the links sit in the bar; below it they open from the Menu
-// button. Keep in sync with the 820px breakpoint in Navbar.css.
-const DESKTOP = '(min-width: 821px)'
+// button. Keep in sync with the 1023px breakpoint in Navbar.css.
+const DESKTOP = '(min-width: 1024px)'
 
 export default function Navbar() {
   const [active, setActive] = useState('hero')
@@ -102,9 +103,14 @@ export default function Navbar() {
           type="button"
           aria-expanded={open}
           aria-controls="nav-menu"
+          aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((o) => !o)}
         >
-          {open ? 'Close' : 'Menu'}
+          <span className="nav__menu-icon" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
         </button>
       </div>
     </nav>

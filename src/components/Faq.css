@@ -1,6 +1,6 @@
 .faq-section {
   padding-block: var(--section-space);
-  background: var(--ivory);
+  background: var(--sand);
   overflow: clip;
 }
 .faq-section__layout {

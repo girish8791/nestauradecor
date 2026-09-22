@@ -92,12 +92,13 @@ export default function OurProcess() {
         runner.setAttribute('cy', `${point.y}`)
       }
 
-      // Reveal each step only when the travelling dot reaches its centre.
-      // Once revealed, keep it visible so returning upward does not replay it.
+      // Each step shows while the travelling dot is at or past its centre, both
+      // ways: scrolling back up, the line retracts and the steps below the dot
+      // fold away again. Above the section every step stays shown.
+      const passed = bounds.top < 0 && !visible
       items.forEach(item => {
-        if (motion.matches || (visible && item.offsetTop + item.offsetHeight * .5 <= targetY + 12)) {
-          item.classList.add('is-active')
-        }
+        const reached = item.offsetTop + item.offsetHeight * .5 <= targetY + 12
+        item.classList.toggle('is-active', motion.matches || passed || (visible && reached))
       })
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
