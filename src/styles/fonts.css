@@ -1,34 +1,36 @@
+/* WOFF2, subset to Latin plus the punctuation and symbols the site uses
+   (about 100 KB in all, down from 1.35 MB of TTF/OTF). */
 @font-face {
   font-family: 'Distrampler';
-  src: url('/fonts/Distrampler.otf') format('opentype');
+  src: url('/fonts/distrampler.woff2') format('woff2');
   font-weight: 300 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/helvetica-neue-light.ttf') format('truetype');
+  src: url('/fonts/helvetica-neue-light.woff2') format('woff2');
   font-weight: 100 350;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/helvetica-neue-regular.ttf') format('truetype');
+  src: url('/fonts/helvetica-neue-regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/helvetica-neue-medium.ttf') format('truetype');
+  src: url('/fonts/helvetica-neue-medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('/fonts/helvetica-neue-bold.ttf') format('truetype');
+  src: url('/fonts/helvetica-neue-bold.woff2') format('woff2');
   font-weight: 600 900;
   font-style: normal;
   font-display: swap;

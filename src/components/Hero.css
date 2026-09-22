@@ -214,9 +214,10 @@
 }
 
 /* ---------- load sequence ----------
-   Each step is set up paused on its first frame (so it is hidden), and starts
-   when Hero.tsx adds .is-ready (photo loaded). With reduced motion, index.css
-   turns animations off and everything simply shows. */
+   The copy rises in as soon as the page renders, so the headline never waits
+   on the network. The photo is set up paused on its first frame (hidden) and
+   fades in when Hero.tsx adds .is-ready (photo loaded). With reduced motion,
+   index.css turns animations off and everything simply shows. */
 
 .hero__photo img {
   animation: hero-photo 1.6s var(--ease) both paused;
@@ -225,18 +226,16 @@
 .hero__line,
 .hero__lede,
 .hero__cta {
-  animation: hero-rise 1s var(--ease) var(--d, 0s) both paused;
+  animation: hero-rise 1s var(--ease) var(--d, 0s) both;
 }
-.hero__line:nth-child(1) { --d: .35s; }
-.hero__line:nth-child(2) { --d: .5s; }
-.hero__line:nth-child(3) { --d: .65s; }
-.hero__lede              { --d: .8s; }
-.hero__cta               { --d: .95s; }
+.hero__line:nth-child(1) { --d: .1s; }
+.hero__line:nth-child(2) { --d: .22s; }
+.hero__line:nth-child(3) { --d: .34s; }
+.hero__lede              { --d: .46s; }
+.hero__cta               { --d: .58s; }
 
 .hero.is-ready .hero__photo img,
-.hero.is-ready .hero__line,
-.hero.is-ready .hero__lede,
-.hero.is-ready .hero__cta { animation-play-state: running; }
+.hero-photo-ready .hero__photo img { animation-play-state: running; } /* the latter: index.html, before hydration */
 
 @keyframes hero-photo {
   from { opacity: 0; transform: scale(1.05); }

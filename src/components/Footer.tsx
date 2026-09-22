@@ -1,14 +1,72 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import './Footer.css'
 
-export default function Footer() {
-  const [submitted, setSubmitted] = useState(false)
+const WHATSAPP = '919354326246'
+// The Google Apps Script web app (scripts/lead-form.gs) that saves each request
+// to the leads Sheet and emails it. Set in .env.local or the host's settings.
+const LEAD_ENDPOINT = import.meta.env.VITE_LEAD_ENDPOINT as string | undefined
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+const FIELDS = ['name', 'phone', 'location', 'spaceType', 'budget', 'message'] as const
+type Lead = Record<(typeof FIELDS)[number], string>
+type Status = 'idle' | 'sending' | 'sent' | 'failed'
+
+// The request as a WhatsApp message, so it can go straight to the studio.
+function whatsappLink(lead: Lead) {
+  const lines = [
+    'Hi Nest Aura Decor, I would like a call back.',
+    `Name: ${lead.name}`,
+    `Phone: ${lead.phone}`,
+    lead.location && `Location: ${lead.location}`,
+    lead.spaceType && `Space: ${lead.spaceType}`,
+    lead.budget && `Budget: ${lead.budget}`,
+    lead.message && `Note: ${lead.message}`,
+  ]
+  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(lines.filter(Boolean).join('\n'))}`
+}
+
+async function sendLead(lead: Lead) {
+  if (!LEAD_ENDPOINT) throw new Error('VITE_LEAD_ENDPOINT is not set')
+  // form-encoded, so the browser sends it without a CORS preflight (Apps Script answers none)
+  const response = await fetch(LEAD_ENDPOINT, {
+    method: 'POST',
+    body: new URLSearchParams({ ...lead, page: location.href }),
+    signal: AbortSignal.timeout(15000),
+  })
+  const result = await response.json() as { ok?: boolean }
+  if (!result.ok) throw new Error('The form backend refused the request')
+}
+
+export default function Footer() {
+  const [status, setStatus] = useState<Status>('idle')
+  const [lead, setLead] = useState<Lead | null>(null)
+  const thanks = useRef<HTMLHeadingElement>(null)
+  // the form's height, so the thank-you card keeps it and the page doesn't jump
+  const [height, setHeight] = useState<number>()
+  const done = lead !== null && (status === 'sent' || status === 'failed')
+
+  // the fields give way to the thank-you panel; move focus onto it
+  useEffect(() => {
+    if (done) thanks.current?.focus()
+  }, [done])
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!event.currentTarget.reportValidity()) return
-    setSubmitted(true)
+    const form = event.currentTarget
+    if (status === 'sending' || !form.reportValidity()) return
+    const data = new FormData(form)
+    if (data.get('website')) return // the hidden trap field: only bots fill it
+    setHeight(form.offsetHeight)
+    const next = Object.fromEntries(FIELDS.map(key => [key, String(data.get(key) ?? '').trim()])) as Lead
+    setLead(next)
+    setStatus('sending')
+    try {
+      await sendLead(next)
+      setStatus('sent')
+    } catch (error) {
+      console.error('Call-back request not sent:', error)
+      setStatus('failed')
+    }
   }
 
   return (
@@ -19,8 +77,8 @@ export default function Footer() {
             <img src="/logo-olive.webp" alt="Nest Aura Decor" width="184" height="137" />
           </a>
 
-          <p>Location details coming soon</p>
-          <p>Studio hours coming soon</p>
+          <p>Delhi NCR</p>
+          <p>Monday to Saturday, 9 am – 6 pm</p>
 
           <div className="footer__links">
             <div>
@@ -43,53 +101,79 @@ export default function Footer() {
           </div>
         </div>
 
-        <form className="footer-form" onSubmit={handleSubmit}>
-          <h2>Request a call back</h2>
-          <p className="footer-form__hint">A designer calls, not a sales desk.</p>
-
-          <div className="footer-form__fields">
-            <label>
-              Your name
-              <input type="text" name="name" placeholder="Name" autoComplete="name" required />
-            </label>
-            <label>
-              Phone or WhatsApp
-              <input type="tel" name="phone" placeholder="+91 number" autoComplete="tel" required />
-            </label>
-            <label className="footer-form__location">
-              Location
-              <input type="text" name="location" placeholder="Area, city" autoComplete="street-address" required />
-            </label>
-            <div className="footer-form__two">
-              <label>
-                Type of space
-                <select name="spaceType" defaultValue="Apartment">
-                  <option>Apartment</option>
-                  <option>Villa or house</option>
-                  <option>Café or lounge</option>
-                  <option>Clinic</option>
-                  <option>Shop or office</option>
-                </select>
-              </label>
-              <label>
-                Budget
-                <select name="budget" defaultValue="">
-                  <option value="" disabled>Select</option>
-                  <option>Not sure yet</option>
-                </select>
-              </label>
-            </div>
-            <label>
-              Anything we should know
-              <textarea name="message" placeholder="Rooms, timeline, and what you have in mind." />
-            </label>
-            <button className={`footer-form__submit${submitted ? ' is-done' : ''}`} type="submit">
-              {submitted ? 'Request noted' : 'Request call back'}
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.5 17 19 7" /></svg>
+        {done ? (
+          <div className="footer-form footer-form--thanks" role="status" style={{ minHeight: height }}>
+            <span className={`footer-form__badge${status === 'failed' ? ' is-warning' : ''}`} aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d={status === 'sent' ? 'M5 12.5 9.5 17 19 7' : 'M12 7v6m0 4h.01'} /></svg>
+            </span>
+            <h2 ref={thanks} tabIndex={-1}>
+              {status === 'sent' ? `Thank you, ${lead.name.split(' ')[0]}.` : 'Almost there'}
+            </h2>
+            <p className="footer-form__hint">
+              {status === 'sent'
+                ? <>A designer will call you on <strong>{lead.phone}</strong> within one working day, <span>Monday to Saturday</span>, <span>9 am to 6 pm</span>.</>
+                : <>Your request didn’t reach us. Send it on WhatsApp instead; your details are already filled in.</>}
+            </p>
+            <a className="footer-form__submit" href={whatsappLink(lead)} target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5l1.2-3.6a7.9 7.9 0 1 1 2.6 2.5z" /></svg>
+              {status === 'sent' ? 'Chat on WhatsApp now' : 'Send on WhatsApp'}
+            </a>
+            {/* after a failed send the form comes back filled in; after a sent one, empty */}
+            <button type="button" className="footer-form__again" onClick={() => { if (status === 'sent') setLead(null); setStatus('idle') }}>
+              {status === 'sent' ? 'Send another request' : 'Back to the form'}
             </button>
-            {submitted && <p className="footer-form__status" role="status">Thank you. Contact details will be connected to this form shortly.</p>}
           </div>
-        </form>
+        ) : (
+          <form className="footer-form" onSubmit={handleSubmit} aria-busy={status === 'sending'}>
+            <h2>Request a call back</h2>
+            <p className="footer-form__hint">A designer calls, not a sales desk.</p>
+
+            <div className="footer-form__fields">
+              {/* hidden from people; bots that fill every field give themselves away */}
+              <input className="footer-form__trap" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+              <label>
+                Your name
+                <input type="text" name="name" placeholder="Name" autoComplete="name" defaultValue={lead?.name} required />
+              </label>
+              <label>
+                Phone or WhatsApp
+                <input type="tel" name="phone" placeholder="+91 number" autoComplete="tel" inputMode="tel" defaultValue={lead?.phone} required
+                  pattern="[+]?[0-9 ()\-]{10,16}" title="A phone number with at least 10 digits" />
+              </label>
+              <label className="footer-form__location">
+                Location
+                <input type="text" name="location" placeholder="Area, city" autoComplete="street-address" defaultValue={lead?.location} required />
+              </label>
+              <div className="footer-form__two">
+                <label>
+                  Type of space
+                  <select name="spaceType" defaultValue={lead?.spaceType || 'Apartment'}>
+                    <option>Apartment</option>
+                    <option>Villa or house</option>
+                    <option>Café or lounge</option>
+                    <option>Clinic</option>
+                    <option>Shop or office</option>
+                  </select>
+                </label>
+                <label>
+                  Budget
+                  <select name="budget" defaultValue={lead?.budget ?? ''}>
+                    <option value="" disabled>Select</option>
+                    <option>Not sure yet</option>
+                  </select>
+                </label>
+              </div>
+              <label>
+                Anything we should know
+                <textarea name="message" rows={3} maxLength={1000} placeholder="Rooms, timeline, and what you have in mind." defaultValue={lead?.message} />
+              </label>
+              <button className="footer-form__submit" type="submit" disabled={status === 'sending'}>
+                {status === 'sending' ? 'Sending…' : 'Request call back'}
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 9.5 17 19 7" /></svg>
+              </button>
+            </div>
+          </form>
+        )}
       </div>
 
       <div className="wrap footer__bar">

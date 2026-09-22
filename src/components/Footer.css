@@ -84,12 +84,26 @@
   background: color-mix(in srgb, var(--cream) 9%, transparent);
   color: var(--cream);
   padding: 0 14px;
-  font: 400 15px/1.5 var(--font-body);
+  /* 16px: below it, iPhones zoom the page in on focus and the card seems to swell */
+  font: 400 16px/1.5 var(--font-body);
   text-transform: none;
   letter-spacing: 0;
   transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
-.footer-form textarea { min-height: 90px; padding-block: 12px; resize: vertical; }
+/* A fixed box of four lines: the card keeps its size while someone writes, and
+   longer notes scroll inside it on a slim oat rail rather than a grey bar */
+.footer-form textarea {
+  display: block;
+  height: calc(4 * 1.5em + 24px);
+  padding-block: 12px;
+  resize: none;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--oat) 55%, transparent) transparent;
+}
+.footer-form textarea::-webkit-scrollbar { width: 6px; }
+.footer-form textarea::-webkit-scrollbar-thumb { border-radius: 3px; background: color-mix(in srgb, var(--oat) 55%, transparent); }
+.footer-form textarea::-webkit-scrollbar-track { margin-block: 10px; background: transparent; }
 .footer-form select { appearance: auto; }
 .footer-form select option { color: var(--olive-deep); }
 .footer-form input::placeholder,
@@ -116,9 +130,50 @@
   transition: background-color .25s ease, color .25s ease;
 }
 .footer-form__submit:hover { background: var(--oat); }
-.footer-form__submit.is-done { background: var(--olive); color: var(--cream); }
+.footer-form__submit:disabled { cursor: progress; opacity: .75; }
 .footer-form__submit svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.footer-form__status { color: var(--oat); font-size: 13px; line-height: 1.45; text-align: center; }
+/* off-screen rather than display:none, which some bots skip */
+.footer-form__trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+/* thank-you panel: takes the form's place in the same dark card */
+.footer-form--thanks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  text-align: center;
+  animation: footer-thanks .6s var(--ease) both;
+}
+.footer-form--thanks h2 { outline: none; }
+.footer-form--thanks .footer-form__hint { max-width: 34ch; margin: 0 0 var(--space-1); font-size: 15px; line-height: 1.6; text-wrap: balance; }
+.footer-form--thanks strong { color: var(--cream); font-weight: 500; }
+.footer-form--thanks :is(strong, .footer-form__hint span) { white-space: nowrap; }
+.footer-form--thanks .footer-form__submit { align-self: stretch; margin-top: 0; }
+.footer-form__badge {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: var(--space-1);
+  border: 1px solid color-mix(in srgb, var(--oat) 55%, transparent);
+  border-radius: 50%;
+  color: var(--oat);
+}
+.footer-form__badge svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.footer-form__again {
+  padding: 6px 4px;
+  color: color-mix(in srgb, var(--cream) 72%, transparent);
+  font: 400 14px/1.4 var(--font-body);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--cream) 35%, transparent);
+  transition: color .2s ease;
+}
+.footer-form__again:hover { color: var(--cream); }
+@keyframes footer-thanks {
+  from { opacity: 0; transform: translateY(12px); }
+}
 .footer__bar {
   display: flex;
   justify-content: space-between;

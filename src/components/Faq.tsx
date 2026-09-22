@@ -16,7 +16,7 @@ const questions = [
   },
   {
     question: 'Which areas do you serve?',
-    answer: 'We serve projects across our local region and take on select turnkey projects in other cities. Share your location on the call and we will confirm availability.',
+    answer: 'We serve projects across Delhi NCR and take on select turnkey projects in other cities. Share your location on the call and we will confirm availability.',
   },
   {
     question: 'What happens if something breaks after handover?',
