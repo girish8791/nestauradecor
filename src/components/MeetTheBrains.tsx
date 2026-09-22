@@ -1,7 +1,11 @@
 import { useEffect, useRef } from 'react'
 import './MeetTheBrains.css'
 
-const people = [
+// projects / years: add both (e.g. projects: '120+', years: '8') to show the
+// stats line on a card; it stays hidden until then.
+type Person = { name: string; role: string; quote: string; photo?: string; projects?: string; years?: string }
+
+const people: Person[] = [
   {
     name: 'Founder name',
     role: 'Founder',
@@ -53,12 +57,13 @@ export default function MeetTheBrains() {
                   </div>}
               <div className="person-card__meta">
                 <h3>{person.name}</h3>
-                <span>{person.role}</span>
-                <div className="person-card__stats" aria-label="Profile statistics">
-                  <span><b>—</b> projects</span>
-                  <span><b>—</b> years</span>
+                <p className="person-card__role">{person.role}</p>
+                {person.projects && person.years && (
+                  <p className="person-card__stats">{person.projects} projects<span aria-hidden="true"> · </span>{person.years} years</p>
+                )}
+                <div className="person-card__quote">
+                  <div><p>“{person.quote}”</p></div>
                 </div>
-                <p>“{person.quote}”</p>
               </div>
             </article>
           ))}

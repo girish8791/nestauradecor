@@ -83,32 +83,52 @@
 
 .nav__menu-cta { display: none; }
 
+/* Menu: three fine lines, no frame or label, in a 44px tap area. Open,
+   the lines fold into an X. */
 .nav__menu {
   display: none;
   align-items: center;
-  min-height: var(--space-6);
-  padding: 0 var(--space-3);
-  border-radius: 999px; /* matches the call-to-action pill */
-  box-shadow: inset 0 0 0 1px var(--olive-deep);
-  font: 400 var(--text-sm)/1 var(--font-button);
+  justify-content: flex-end;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 2px;
   color: var(--olive-deep);
-  transition: background-color .2s;
 }
-.nav__menu:hover { background: rgba(47, 48, 25, .08); }
+.nav__menu-icon { position: relative; display: block; width: 26px; height: 13px; }
+.nav__menu-icon span {
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transition: top .5s var(--ease), right .5s var(--ease), width .5s var(--ease), rotate .5s var(--ease), opacity .3s ease;
+}
+.nav__menu-icon span:nth-child(1) { top: 0; }
+.nav__menu-icon span:nth-child(2) { top: 6px; width: 70%; }
+.nav__menu-icon span:nth-child(3) { top: 12px; }
+@media (hover: hover) {
+  .nav__menu:hover .nav__menu-icon span:nth-child(2) { width: 100%; }
+}
+.nav__menu[aria-expanded='true'] .nav__menu-icon span:nth-child(1) { top: 6px; right: 4px; width: 18px; rotate: 45deg; }
+.nav__menu[aria-expanded='true'] .nav__menu-icon span:nth-child(2) { width: 0; opacity: 0; }
+.nav__menu[aria-expanded='true'] .nav__menu-icon span:nth-child(3) { top: 6px; right: 4px; width: 18px; rotate: -45deg; }
+.nav__menu:focus-visible { outline-offset: 6px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  .nav__menu-icon span { transition: none; }
+}
 
-/* tighter link spacing keeps everything in the bar down to 821px */
+/* tighter link spacing keeps all six links in the bar down to 1024px */
 @media (max-width: 1199px) {
   .nav__links { gap: var(--space-4); }
 }
 
-/* below 820px the links open from the Menu button as a panel under the bar */
-@media (max-width: 820px) {
+/* below 1024px the links open from the Menu button as a panel under the bar */
+@media (max-width: 1023px) {
   .nav__inner {
     display: flex;
     gap: var(--space-2);
   }
   .nav__logo { margin-right: auto; }
-  .nav__logo img { height: var(--space-6); } /* 48px in the 72px bar */
   .nav__menu { display: inline-flex; }
 
   .nav__links {
@@ -130,6 +150,11 @@
     padding: var(--space-2) 0;
     border-bottom: 1px solid rgba(47, 48, 25, .15);
   }
+}
+
+/* the 72px bar on tablets and phones takes a 48px logo */
+@media (max-width: 820px) {
+  .nav__logo img { height: var(--space-6); }
 }
 
 /* phones: the bar keeps just the logo and Menu; the call-to-action sits in the panel */

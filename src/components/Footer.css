@@ -2,7 +2,7 @@
   margin-top: clamp(88px, 10vw, 128px);
   padding-bottom: var(--space-4);
   background: var(--divider);
-  color: var(--taupe);
+  color: var(--olive); /* 5.6:1 on the footer tan; taupe was 4.5:1 */
 }
 .footer__grid {
   display: grid;
@@ -37,7 +37,7 @@
   font-size: 14px;
   line-height: 1.5;
 }
-.footer__links span { color: color-mix(in srgb, var(--taupe) 68%, transparent); }
+.footer__links span { color: var(--walnut); } /* 4.9:1 */
 .footer__links a { transition: color .2s ease; }
 .footer__links a:hover { color: var(--olive); }
 
@@ -126,7 +126,7 @@
   margin-top: var(--space-6);
   padding-top: var(--space-3);
   border-top: 1px solid color-mix(in srgb, var(--olive-deep) 13%, transparent);
-  color: color-mix(in srgb, var(--taupe) 82%, transparent);
+  color: var(--olive);
   font-size: 13px;
 }
 

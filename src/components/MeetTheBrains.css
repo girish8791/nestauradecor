@@ -65,58 +65,55 @@
   translate: -50% 0;
   opacity: .75;
 }
+/* Name plate: the name in the display face and the role in spaced capitals. The quote waits folded away and opens beneath them when
+   someone reaches for the card, so the resting card stays calm. */
 .person-card__meta {
   position: absolute;
   z-index: 1;
   inset: auto 0 0;
-  padding: 72px 24px 24px;
+  padding: 72px 28px 28px;
   color: var(--cream);
-  background: linear-gradient(180deg, transparent, rgba(47, 48, 25, .96) 52%);
-  transform: translateY(70px);
-  transition: transform .5s var(--ease);
+  /* lighter than the original .96: the photo stays clear above the plate and
+     the name sits on about .62, keeping it legible over light photos */
+  background: linear-gradient(180deg, transparent, rgba(47, 48, 25, .3) 36px, rgba(47, 48, 25, .62) 80px, rgba(47, 48, 25, .8) 150px, rgba(47, 48, 25, .86));
+  text-shadow: 0 1px 12px rgba(28, 29, 15, .45);
 }
 .person-card__meta h3 {
   color: inherit;
-  font: 500 22px/1.25 var(--font-body);
-}
-.person-card__meta > span {
-  display: block;
-  margin-top: 3px;
-  color: var(--oat);
-  font-size: 13px;
-}
-.person-card__stats {
-  display: flex;
-  gap: 24px;
-  margin-top: 13px;
-  color: rgba(248, 244, 238, .82);
-  font-size: 11px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-.person-card__stats span { display: block; }
-.person-card__stats b {
-  display: block;
-  color: var(--oat);
-  font: 500 20px/1.2 var(--font-body);
+  font: 400 clamp(28px, 2.3vw, 32px)/1.1 "Distrampler", var(--font-display);
   letter-spacing: 0;
 }
-.person-card__meta p {
-  margin-top: 16px;
-  color: rgba(248, 244, 238, .9);
-  font-size: 14px;
-  line-height: 1.55;
-  opacity: 0;
-  transition: opacity .4s ease .18s;
+.person-card__role,
+.person-card__stats {
+  margin-top: 10px;
+  font: 500 11px/1.4 var(--font-body);
+  letter-spacing: .22em;
+  text-transform: uppercase;
 }
-.person-card:hover .person-card__placeholder,
-.person-card:focus-visible .person-card__placeholder,
-.person-card:hover .person-card__photo,
-.person-card:focus-visible .person-card__photo { transform: scale(1.05); }
-.person-card:hover .person-card__meta,
-.person-card:focus-visible .person-card__meta { transform: none; }
-.person-card:hover .person-card__meta p,
-.person-card:focus-visible .person-card__meta p { opacity: 1; }
+.person-card__role { color: color-mix(in srgb, var(--oat) 35%, var(--cream)); }
+.person-card__stats { margin-top: 6px; color: rgb(248 244 238 / .78); }
+.person-card__quote {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .55s var(--ease);
+}
+.person-card__quote > div { min-height: 0; overflow: hidden; }
+.person-card__quote p {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(211 188 156 / .35);
+  color: rgb(248 244 238 / .92);
+  font: 350 15px/1.55 var(--font-body);
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+/* Hover with a mouse, keyboard focus, or a tap on a phone (the tap focuses
+   the card) opens the quote. */
+.person-card:is(:hover, :focus) .person-card__placeholder,
+.person-card:is(:hover, :focus) .person-card__photo { transform: scale(1.05); }
+.person-card:is(:hover, :focus) .person-card__quote { grid-template-rows: 1fr; }
+.person-card:is(:hover, :focus) .person-card__quote p { opacity: 1; transition-delay: .12s; }
+.person-card:focus:not(:focus-visible) { outline: none; }
 
 @media (prefers-reduced-motion: no-preference) {
   .brains__header, .person-card { opacity: 0; translate: 0 28px; }
@@ -133,7 +130,7 @@
 }
 @media (max-width: 760px) {
   .brains { background-size: 48px 48px, 48px 48px, 192px 192px, 192px 192px; }
-  .brains__grid { grid-template-columns: minmax(0, 400px); }
-  .person-card__meta { transform: none; }
-  .person-card__meta p { opacity: 1; }
+  .brains__grid { grid-template-columns: minmax(0, 360px); }
+  .person-card { aspect-ratio: .9; }
+  .person-card__meta { padding: 64px 24px 24px; }
 }

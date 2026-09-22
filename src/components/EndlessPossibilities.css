@@ -1,4 +1,4 @@
-.possibilities { padding-block: var(--space-12) var(--space-16); background: var(--cream); font-family: var(--font-body); }
+.possibilities { padding-block: var(--space-12) var(--space-16); background: var(--sand); font-family: var(--font-body); }
 .possibilities__header h2 { font-family: var(--font-display); font-weight: 400; }
 .possibilities p { font-family: var(--font-body); }
 .possibilities__header { text-align: center; margin-bottom: var(--space-10); }
@@ -12,8 +12,14 @@
 .possibilities__number > span { width: 64px; height: 1px; background: var(--tan); }
 .possibilities__copy h3 { margin-bottom: 16px; font: 400 clamp(28px, 2.7vw, 40px)/1.15 var(--font-display); }
 .possibilities__copy p { max-width: 44ch; }
-.possibilities__copy ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 0; padding: 0; }
-.possibilities__copy li { border: 1px solid var(--divider); border-radius: 24px; padding: 7px 13px; font: 400 12px/1.5 var(--font-body); color: var(--olive); background: var(--ivory); }
+/* Project highlights: a quiet line of spaced capitals with dot separators,
+   styled as a caption so it never reads as a row of buttons. Each item
+   carries its dot in front; the list starts one separator to the left and
+   clips that strip, so the dot of whichever item opens a row is hidden and
+   none is left dangling when the line wraps. */
+.possibilities__copy ul { --sep: 26px; list-style: none; display: flex; flex-wrap: wrap; row-gap: 6px; margin: 24px 0 0 calc(-1 * var(--sep)); padding: 0; clip-path: inset(0 0 0 var(--sep)); }
+.possibilities__copy li { position: relative; padding-left: var(--sep); font: 500 12px/1.6 var(--font-body); letter-spacing: .16em; text-transform: uppercase; color: var(--walnut); } /* 5.5:1 on sand */
+.possibilities__copy li::before { content: '·'; position: absolute; left: 0; width: var(--sep); text-align: center; color: var(--tan); letter-spacing: 0; }
 .possibilities__figure { margin: 0; min-width: 0; }
 .possibilities__comparison { position: relative; aspect-ratio: 1.5; overflow: hidden; border-radius: 20px; background: var(--sand); box-shadow: 0 20px 44px -24px #2f30192e; isolation: isolate; }
 .possibilities__layer { position: absolute; inset: 0; pointer-events: none; }
@@ -62,6 +68,8 @@
   .possibilities__copy p { max-width: 58ch; }
   .possibilities__number { margin-bottom: 16px; }
   .possibilities__copy ul { margin-top: 16px; }
+  .possibilities__copy li { font-size: 11px; letter-spacing: .1em; }
+  .possibilities__copy ul { --sep: 18px; }
 }
 @media (max-width: 400px) {
   .possibilities__comparison { border-radius: 12px; }
