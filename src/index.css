@@ -27,7 +27,7 @@ body {
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 img { display: block; max-width: 100%; }
-p { margin: 0; }
+p { margin: 0; text-wrap: pretty; } /* no one-word last lines on narrow screens */
 
 :focus-visible { outline: 2px solid var(--olive-deep); outline-offset: 3px; }
 

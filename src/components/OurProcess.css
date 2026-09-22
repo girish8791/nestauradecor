@@ -57,11 +57,11 @@
   .process { padding-top: var(--space-8); }
   .process__header > p { font-size: 16px; max-width: 28em; }
   .process__journey { margin-top: var(--space-6); }
-  .process__step { min-height: 340px; column-gap: 12px; }
+  .process__step { min-height: 300px; column-gap: 16px; }
   .process__copy { padding: 16px 0; }
-  .process__art { width: 140px; height: 140px; }
+  .process__art { width: 148px; height: 148px; }
   .process__number { font-size: 34px; }
-  .process__description { font-size: 14px; line-height: 1.55; margin-top: 10px; }
+  .process__description { font-size: 15px; line-height: 1.5; margin-top: 8px; text-wrap: pretty; }
   .process__copy h3 { font-size: clamp(23px, 5vw, 30px); }
   .process__spark { font-size: 64px; top: -18px; left: -6px; }
   .process__plan, .process__samples { width: 244px; height: 228px; inset: 0; transform: scale(.54) rotate(-8deg); transform-origin: top left; }
