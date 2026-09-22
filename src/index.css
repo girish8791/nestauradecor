@@ -8,7 +8,12 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--nav-h); /* section tops land below the sticky bar */
   -webkit-text-size-adjust: 100%;
+  background: var(--cream);
 }
+
+/* The browser's scrollbar is hidden; ScrollRail draws the page's own. */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
 
 body {
   margin: 0;

@@ -8,6 +8,7 @@ import PeacePriority from './components/PeacePriority'
 import Faq from './components/Faq'
 import MeetTheBrains from './components/MeetTheBrains'
 import Footer from './components/Footer'
+import ScrollRail from './components/ScrollRail'
 import './styles/layout.css'
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
         <Faq />
       </main>
       <Footer />
+      <ScrollRail />
     </>
   )
 }

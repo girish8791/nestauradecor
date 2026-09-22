@@ -1,0 +1,33 @@
+/* A hairline rail inset from the edge; the thumb is a slim olive pill that
+   widens when reached for. Fades out when the page is still. */
+.scroll-rail {
+  position: fixed; z-index: 90; top: 0; right: 0; bottom: 0; width: 18px;
+  padding: calc(var(--nav-h) + 16px) 0 16px;
+  opacity: 0; transition: opacity .6s ease .15s;
+}
+.scroll-rail:hover, .scroll-rail.is-awake { opacity: 1; transition-delay: 0s; }
+.scroll-rail__track { position: relative; height: 100%; cursor: pointer; }
+.scroll-rail__track::before {
+  content: ''; position: absolute; top: 0; bottom: 0; right: 7px; width: 1px;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--olive) 22%, transparent) 12%, color-mix(in srgb, var(--olive) 22%, transparent) 88%, transparent);
+}
+.scroll-rail__thumb {
+  position: absolute; top: 0; right: 6px; width: 3px; border-radius: 999px;
+  background: var(--olive); box-shadow: 0 0 0 1px rgb(248 244 238 / .5);
+  cursor: grab; touch-action: none;
+  transition: width .35s var(--ease), right .35s var(--ease), background-color .3s ease;
+}
+/* A wider invisible grip so the slim thumb is easy to catch. */
+.scroll-rail__thumb::before { content: ''; position: absolute; inset: 0 -6px; }
+.scroll-rail:hover .scroll-rail__thumb, .scroll-rail.is-dragging .scroll-rail__thumb { right: 5px; width: 5px; background: var(--olive-deep); }
+.scroll-rail.is-dragging .scroll-rail__thumb { cursor: grabbing; }
+
+/* Touch screens: no grabbing, just the quiet indicator while scrolling. */
+@media (pointer: coarse) {
+  .scroll-rail { width: 8px; pointer-events: none; }
+  .scroll-rail__track::before { right: 3px; }
+  .scroll-rail__thumb { right: 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-rail, .scroll-rail__thumb { transition: none; }
+}
