@@ -1,0 +1,50 @@
+# How Railway serves the built site. Railpack picks this file up in place of its
+# own, which sets no security headers. {{.DIST_DIR}} is Railpack's template
+# variable for the build output (/app/dist).
+#
+# The sha256 in script-src is the inline script in index.html; the build
+# (scripts/prerender.mjs) fails if the two ever fall out of step.
+{
+	admin off
+	persist_config off
+	auto_https off
+	log {
+		format json
+	}
+	servers {
+		trusted_proxies static private_ranges 100.0.0.0/8
+	}
+}
+
+:{$PORT:80} {
+	log {
+		format json
+	}
+
+	header {
+		# only ever this site over https, for a year
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		# no guessing a file's type, no putting the site in someone else's frame
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+		# scripts, styles and images come from here; the form posts to the
+		# Google Apps Script that stores the leads and nowhere else
+		Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'sha256-fIpNZtDAO+weSS9kwqZ3rVtRPoNrOKkhSpZgfhpCn+I='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://script.google.com https://script.googleusercontent.com; form-action 'self'; frame-src 'none'; upgrade-insecure-requests"
+		-Server
+	}
+
+	root * {{.DIST_DIR}}
+
+	# hashed file names never change; the page itself is checked every time
+	@immutable path /assets/* /fonts/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+	header /index.html Cache-Control "no-cache"
+
+	file_server {
+		hide .git .env*
+	}
+	encode gzip zstd
+	try_files {path} {path}/index.html /index.html
+}

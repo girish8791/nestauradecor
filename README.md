@@ -33,7 +33,13 @@ One-time setup, in the Google account that should own the leads:
 3. **Deploy → New deployment → Web app**: execute as **Me**, access **Anyone**. Approve the permissions (Sheets and Gmail) and copy the web app URL.
 4. Set `VITE_LEAD_ENDPOINT` to that URL: in `.env.local` for local builds (see `.env.example`) and in the host's environment variables, then rebuild.
 
+Junk is kept out on both sides (`src/phone.ts` and the same rules in the script): a hidden field only bots fill, mobile numbers that must be ten digits starting 6-9 and not made up (9999999999, 9876543210), and the same number twice in ten minutes counted once. Anything merely odd (filled in under 8 seconds, a link in the message) is still saved, with a note in the "Check" column and in the email subject.
+
 The "Leads" tab and its header row are created with the first request. After editing the script, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
+
+## Hosting and headers
+
+Railway builds the repo and serves `dist` with Caddy. The `Caddyfile` at the root replaces Railpack's default one, which sets almost no headers; ours adds HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` and a Content-Security-Policy that allows scripts, styles, images, fonts and video from this site only, plus form posts to the leads script. The policy names the inline script in `index.html` by hash; `npm run build` fails if that script changes without the hash, and `caddy validate` checks the file itself.
 
 ## Open items
 
