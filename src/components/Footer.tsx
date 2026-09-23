@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import './Footer.css'
+import { normalisePhone, phoneProblem } from '../phone'
 
 const WHATSAPP = '919354326246'
 // The Google Apps Script web app (scripts/lead-form.gs) that saves each request
@@ -25,12 +26,13 @@ function whatsappLink(lead: Lead) {
   return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(lines.filter(Boolean).join('\n'))}`
 }
 
-async function sendLead(lead: Lead) {
+async function sendLead(lead: Lead, seconds: number) {
   if (!LEAD_ENDPOINT) throw new Error('VITE_LEAD_ENDPOINT is not set')
   // form-encoded, so the browser sends it without a CORS preflight (Apps Script answers none)
   const response = await fetch(LEAD_ENDPOINT, {
     method: 'POST',
-    body: new URLSearchParams({ ...lead, page: location.href }),
+    // seconds: how long the form was open. The backend marks instant fills for review.
+    body: new URLSearchParams({ ...lead, page: location.href, seconds: String(seconds) }),
     signal: AbortSignal.timeout(15000),
   })
   const result = await response.json() as { ok?: boolean }
@@ -43,7 +45,10 @@ export default function Footer() {
   const thanks = useRef<HTMLHeadingElement>(null)
   // the form's height, so the thank-you card keeps it and the page doesn't jump
   const [height, setHeight] = useState<number>()
+  const openedAt = useRef(0)
   const done = lead !== null && (status === 'sent' || status === 'failed')
+
+  useEffect(() => { openedAt.current = Date.now() }, [])
 
   // the fields give way to the thank-you panel; move focus onto it
   useEffect(() => {
@@ -53,15 +58,21 @@ export default function Footer() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const form = event.currentTarget
-    if (status === 'sending' || !form.reportValidity()) return
+    if (status === 'sending') return
+    const phone = form.elements.namedItem('phone') as HTMLInputElement
+    phone.setCustomValidity(phone.value.trim() ? phoneProblem(phone.value) ?? '' : '')
+    if (!form.reportValidity()) return
     const data = new FormData(form)
     if (data.get('website')) return // the hidden trap field: only bots fill it
     setHeight(form.offsetHeight)
     const next = Object.fromEntries(FIELDS.map(key => [key, String(data.get(key) ?? '').trim()])) as Lead
+    // one spelling of the number everywhere: the sheet, the email and WhatsApp
+    const digits = normalisePhone(next.phone)
+    next.phone = `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`
     setLead(next)
     setStatus('sending')
     try {
-      await sendLead(next)
+      await sendLead(next, openedAt.current ? Math.round((Date.now() - openedAt.current) / 1000) : 0)
       setStatus('sent')
     } catch (error) {
       console.error('Call-back request not sent:', error)
@@ -137,8 +148,14 @@ export default function Footer() {
               </label>
               <label>
                 Phone or WhatsApp
-                <input type="tel" name="phone" placeholder="+91 number" autoComplete="tel" inputMode="tel" defaultValue={lead?.phone} required
-                  pattern="[+]?[0-9 ()\-]{10,16}" title="A phone number with at least 10 digits" />
+                {/* checked against src/phone.ts on blur and again on submit */}
+                <input type="tel" name="phone" placeholder="+91 number" autoComplete="tel" inputMode="tel" maxLength={18} defaultValue={lead?.phone} required
+                  onInput={event => event.currentTarget.setCustomValidity('')}
+                  onBlur={event => {
+                    const field = event.currentTarget
+                    field.setCustomValidity(field.value.trim() ? phoneProblem(field.value) ?? '' : '')
+                    if (field.value.trim()) field.reportValidity()
+                  }} />
               </label>
               <label className="footer-form__location">
                 Location
