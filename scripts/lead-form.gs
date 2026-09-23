@@ -28,9 +28,14 @@ function doPost(e) {
   const lock = LockService.getScriptLock()
   lock.waitLock(10000)
   try {
-    // The same number twice within ten minutes is one enquiry, not two.
     const cache = CacheService.getScriptCache()
+    // The same number twice within ten minutes is one enquiry, not two.
     if (cache.get(phone)) return reply({ ok: true })
+    // A flood is someone attacking the form, not a rush of customers: stop
+    // writing after 40 in an hour, so the sheet and the inbox stay usable.
+    const hour = Number(cache.get('count') || 0) + 1
+    if (hour > 40) return reply({ ok: true })
+    cache.put('count', String(hour), 3600)
     cache.put(phone, '1', 600)
     sheet().appendRow([new Date()].concat(FIELDS.map(field => cell(data[field]))).concat([checks(data).join(', ')]))
   } finally {
@@ -41,7 +46,7 @@ function doPost(e) {
   const flags = checks(data)
   MailApp.sendEmail({
     to: NOTIFY || Session.getEffectiveUser().getEmail(),
-    subject: (flags.length ? 'Check this call-back request: ' : 'New call-back request: ') + name + (clean(data.location) ? ', ' + clean(data.location) : ''),
+    subject: (flags.length ? 'Check this call-back request: ' : 'New call-back request: ') + oneLine(name) + (clean(data.location) ? ', ' + oneLine(data.location) : ''),
     body: lines.join('\n') + '\n\nWhatsApp: https://wa.me/91' + phone
       + (flags.length ? '\n\nWorth a look before you call: ' + flags.join(', ') + '.' : '')
       + '\n\nAll enquiries: ' + SpreadsheetApp.getActiveSpreadsheet().getUrl(),
@@ -96,6 +101,11 @@ function sheet() {
 
 function clean(value) {
   return String(value || '').trim().slice(0, 2000)
+}
+
+// for the email subject: one line only, so a name can't add mail headers
+function oneLine(value) {
+  return clean(value).replace(/[\r\n]+/g, ' ').slice(0, 120)
 }
 
 // A leading = + - or @ would make Sheets treat the text as a formula.

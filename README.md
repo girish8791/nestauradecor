@@ -37,6 +37,10 @@ Junk is kept out on both sides (`src/phone.ts` and the same rules in the script)
 
 The "Leads" tab and its header row are created with the first request. After editing the script, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
 
+## Hosting and headers
+
+Railway builds the repo and serves `dist` with Caddy. The `Caddyfile` at the root replaces Railpack's default one, which sets almost no headers; ours adds HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` and a Content-Security-Policy that allows scripts, styles, images, fonts and video from this site only, plus form posts to the leads script. The policy names the inline script in `index.html` by hash; `npm run build` fails if that script changes without the hash, and `caddy validate` checks the file itself.
+
 ## Open items
 
 - Placeholders to fill: team projects/years and email.
